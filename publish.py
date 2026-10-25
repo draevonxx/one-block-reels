@@ -30,6 +30,7 @@ FORCE_DATE = os.environ.get("FORCE_DATE", "").strip()
 RAW_BASE = "https://raw.githubusercontent.com/{repo}/main/clips"
 
 # date -> (file, caption day, publish time UTC as HH:MM)
+# 21:00 UTC targets US/CA/UK evenings + AU mornings (native-English audience).
 SCHEDULE = {
     "2026-10-25": ("day1.mp4", "DAY 1", "16:30"),
     "2026-10-26": ("day2.mp4", "DAY 2", "13:30"),
@@ -38,6 +39,12 @@ SCHEDULE = {
     "2026-10-29": ("day5.mp4", "DAY 5", "13:30"),
     "2026-10-30": ("day6.mp4", "DAY 6", "13:30"),
     "2026-10-31": ("day7.mp4", "DAY 7", "13:30"),
+    # IShowSpeed x Expedia clipping campaign
+    "2026-11-01": ("speed1.mp4", "SPEED 1", "21:00"),
+    "2026-11-02": ("speed2.mp4", "SPEED 2", "21:00"),
+    "2026-11-03": ("speed3.mp4", "SPEED 3", "21:00"),
+    "2026-11-04": ("speed4.mp4", "SPEED 4", "21:00"),
+    "2026-11-05": ("speed5.mp4", "SPEED 5", "21:00"),
 }
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
