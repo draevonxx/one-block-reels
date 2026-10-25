@@ -1,0 +1,37 @@
+name: Publish daily reel
+
+on:
+  schedule:
+    # Hourly check; publish.py fires each reel at its planned moment
+    # (Oct 25: 16:30 UTC / 10 PM IST; Oct 26-31: 13:30 UTC / 7 PM IST)
+    - cron: "5 * * * *"
+  workflow_dispatch:
+    inputs:
+      dryrun:
+        description: "Create container only, do not publish"
+        type: boolean
+        default: true
+      date:
+        description: "Force date (YYYY-MM-DD), empty = today"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - run: python publish.py
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          DRYRUN: ${{ github.event.inputs.dryrun || 'false' }}
+          FORCE_DATE: ${{ github.event.inputs.date || '' }}
