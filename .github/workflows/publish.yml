@@ -2,9 +2,9 @@ name: Publish daily reel
 
 on:
   schedule:
-    # Hourly check; publish.py fires each reel at its planned moment
+    # Every 10 min; publish.py fires each reel at its planned moment
     # (Oct 25: 16:30 UTC / 10 PM IST; Oct 26-31: 13:30 UTC / 7 PM IST)
-    - cron: "5 * * * *"
+    - cron: "*/10 * * * *"
   workflow_dispatch:
     inputs:
       dryrun:
