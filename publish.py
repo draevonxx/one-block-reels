@@ -1,18 +1,14 @@
-"""Daily Instagram Reel publisher for the One Block series (GitHub Actions).
+"""Instagram reel publisher for two campaigns (GitHub Actions).
 
-Runs hourly; publishes each day's reel at its planned moment:
-  - Oct 25, 2026 at 16:30 UTC (10:00 PM IST)
-  - Oct 26-31, 2026 at 13:30 UTC (7:00 PM IST)
+Runs every 10 min; publishes each scheduled reel at its planned moment.
+  - One Block series: Oct 25-31, 2026 (7 PM IST slots)
+  - IShowSpeed x Expedia: Oct 25-29, 2026 at 21:00 UTC
+    (US/CA/UK/AU/NZ evening-optimized: 4-5 PM ET, 9 PM UK, 8 AM AU)
 
-Safe to run often: skips when not yet due, skips if the same caption was
-already published (idempotent), exits cleanly on non-scheduled days.
-
-Env:
-  IG_TOKEN   - Instagram long-lived access token
-  IG_USER_ID - Instagram business user id
-  DRYRUN     - "true" stops after container creation (no publish)
-  FORCE_DATE - optional "YYYY-MM-DD" override (manual reruns)
+Idempotent: skips when not due, already published (caption match), or the
+6h window has lapsed. Multiple reels can share one date.
 """
+import base64
 import json
 import os
 import sys
@@ -28,113 +24,155 @@ DRYRUN = os.environ.get("DRYRUN", "false").lower() == "true"
 FORCE_DATE = os.environ.get("FORCE_DATE", "").strip()
 
 RAW_BASE = "https://raw.githubusercontent.com/{repo}/main/clips"
+STATE_FILE = "state.json"
 
-# date -> (file, caption day, publish time UTC as HH:MM)
-# 21:00 UTC targets US/CA/UK evenings + AU mornings (native-English audience).
-SCHEDULE = {
-    "2026-10-25": ("day1.mp4", "DAY 1", "16:30"),
-    "2026-10-26": ("day2.mp4", "DAY 2", "13:30"),
-    "2026-10-27": ("day3.mp4", "DAY 3", "13:30"),
-    "2026-10-28": ("day4.mp4", "DAY 4", "13:30"),
-    "2026-10-29": ("day5.mp4", "DAY 5", "13:30"),
-    "2026-10-30": ("day6.mp4", "DAY 6", "13:30"),
-    "2026-10-31": ("day7.mp4", "DAY 7", "13:30"),
-    # IShowSpeed x Expedia clipping campaign
-    "2026-11-01": ("speed1.mp4", "SPEED 1", "21:00"),
-    "2026-11-02": ("speed2.mp4", "SPEED 2", "21:00"),
-    "2026-11-03": ("speed3.mp4", "SPEED 3", "21:00"),
-    "2026-11-04": ("speed4.mp4", "SPEED 4", "21:00"),
-    "2026-11-05": ("speed5.mp4", "SPEED 5", "21:00"),
-}
+# One Block series (7 PM IST slots)
+BLOCK = [
+    ("2026-10-25", "16:30", "day1.mp4", "DAY 1"),
+    ("2026-10-26", "13:30", "day2.mp4", "DAY 2"),
+    ("2026-10-27", "13:30", "day3.mp4", "DAY 3"),
+    ("2026-10-28", "13:30", "day4.mp4", "DAY 4"),
+    ("2026-10-29", "13:30", "day5.mp4", "DAY 5"),
+    ("2026-10-30", "13:30", "day6.mp4", "DAY 6"),
+    ("2026-10-31", "13:30", "day7.mp4", "DAY 7"),
+]
+# IShowSpeed x Expedia (21:00 UTC = 4-5 PM ET / 9 PM UK / 8 AM AU)
+SPEED = [
+    ("2026-10-25", "21:00", "speed1.mp4", "SPEED 1"),
+    ("2026-10-26", "21:00", "speed2.mp4", "SPEED 2"),
+    ("2026-10-27", "21:00", "speed3.mp4", "SPEED 3"),
+    ("2026-10-28", "21:00", "speed4.mp4", "SPEED 4"),
+    ("2026-10-29", "21:00", "speed5.mp4", "SPEED 5"),
+]
+
+SCHEDULE = [
+    {"date": d, "time": t, "file": f, "caption": c}
+    for d, t, f, c in BLOCK + SPEED
+]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
+
+
+def load_state() -> dict:
+    try:
+        return json.load(open(STATE_FILE, encoding="utf-8"))
+    except (OSError, ValueError):
+        return {"published": []}
+
+
+def save_state(state: dict, repo: str) -> None:
+    """Commit state.json back to the repo (marks the reel as done)."""
+    gh_token = os.environ.get("GITHUB_TOKEN", "")
+    if not gh_token:
+        print("No GITHUB_TOKEN; state not persisted (reruns may duplicate).")
+        return
+    api = f"https://api.github.com/repos/{repo}/contents/{STATE_FILE}"
+    headers = {"Authorization": f"Bearer {gh_token}", "Accept": "application/vnd.github+json"}
+    sha = None
+    existing = requests.get(api, headers=headers, timeout=30)
+    if existing.status_code == 200:
+        sha = existing.json().get("sha")
+    body = {
+        "message": f"state: publish {state['last']}",
+        "content": base64.b64encode(
+            json.dumps(state, ensure_ascii=False, indent=2).encode()
+        ).decode(),
+    }
+    if sha:
+        body["sha"] = sha
+    r = requests.put(api, headers=headers, json=body, timeout=30)
+    print("state commit:", r.status_code)
 
 
 def main() -> int:
     now = datetime.now(timezone.utc)
     today = FORCE_DATE or now.strftime("%Y-%m-%d")
-    entry = SCHEDULE.get(today)
-    if not entry:
-        print(f"No reel scheduled for {today}; nothing to do.")
+    todays = [e for e in SCHEDULE if e["date"] == today]
+    if not todays:
+        print(f"No reels scheduled for {today}; nothing to do.")
         return 0
-    clip_file, day, hhmm = entry
-    publish_at = datetime.strptime(f"{today} {hhmm}", "%Y-%m-%d %H:%M").replace(tzinfo=timezone.utc)
 
-    if now < publish_at:
-        print(f"{day} is due at {hhmm} UTC (in {(publish_at - now)}); not yet.")
-        return 0
-    if now > publish_at + timedelta(hours=6):
-        print(f"{day} window missed (due {publish_at}, now {now}). Use FORCE_DATE to rerun.")
-        return 1
-
-    caption = CAPTIONS[day]
-
-    # Idempotency: skip if this exact caption was already published.
-    feed = requests.get(
-        f"{GRAPH}/{IG_USER_ID}/media",
-        params={"fields": "caption", "limit": 10, "access_token": TOKEN},
-        timeout=30,
-    )
-    feed.raise_for_status()
-    for item in feed.json().get("data", []):
-        if (item.get("caption") or "").strip() == caption.strip():
-            print(f"{day} already published (matching caption found); skipping.")
-            return 0
-
+    failures = 0
+    state = load_state()
     repo = os.environ.get("GITHUB_REPOSITORY", "")
-    video_url = f"{RAW_BASE.format(repo=repo)}/{clip_file}"
-    print(f"{day}: publishing {clip_file} (due {publish_at.isoformat()}, now {now.isoformat()})")
-    print(f"video_url: {video_url}")
+    for entry in todays:
+        file_name = entry["file"]
+        day = entry["caption"]
+        caption = CAPTIONS[day]
+        publish_at = datetime.strptime(
+            f"{entry['date']} {entry['time']}", "%Y-%m-%d %H:%M"
+        ).replace(tzinfo=timezone.utc)
 
-    # 1. Create the media container; Instagram fetches the video from the URL.
-    r = requests.post(
-        f"{GRAPH}/{IG_USER_ID}/media",
-        data={
-            "media_type": "REELS",
-            "video_url": video_url,
-            "caption": caption,
-            "share_to_feed": "true",
-            "access_token": TOKEN,
-        },
-        timeout=60,
-    )
-    print("container:", r.status_code, r.text[:300])
-    r.raise_for_status()
-    creation_id = r.json()["id"]
+        if now < publish_at:
+            print(f"{day} due at {entry['time']} UTC (in {publish_at - now}); not yet.")
+            continue
+        if now > publish_at + timedelta(hours=6):
+            print(f"{day} window missed (due {publish_at}). Use FORCE_DATE to rerun.")
+            failures += 1
+            continue
 
-    if DRYRUN:
-        print(f"DRYRUN: container {creation_id} created; not publishing.")
-        return 0
+        state_key = f"{entry['date']}|{day}"
+        if state_key in state.get("published", []):
+            print(f"{day}: already published (state); skipping.")
+            continue
+            continue
 
-    # 2. Wait for Instagram to finish processing the video.
-    for attempt in range(60):
-        time.sleep(15)
-        s = requests.get(
-            f"{GRAPH}/{creation_id}",
-            params={"fields": "status_code,status", "access_token": TOKEN},
-            timeout=30,
+        video_url = f"{RAW_BASE.format(repo=repo)}/{file_name}"
+        print(f"{day}: publishing {file_name} (due {publish_at.isoformat()}, now {now.isoformat()})")
+        print(f"video_url: {video_url}")
+
+        r = requests.post(
+            f"{GRAPH}/{IG_USER_ID}/media",
+            data={
+                "media_type": "REELS",
+                "video_url": video_url,
+                "caption": caption,
+                "share_to_feed": "true",
+                "access_token": TOKEN,
+            },
+            timeout=60,
         )
-        status = s.json().get("status_code", "")
-        print(f"  [{attempt}] status: {status}")
-        if status == "FINISHED":
-            break
-        if status == "EXPIRED":
-            print("Container expired; aborting.")
-            return 1
-    else:
-        print("Processing timed out; the hourly rerun will retry via caption check.")
-        return 1
+        print("container:", r.status_code, r.text[:300])
+        r.raise_for_status()
+        creation_id = r.json()["id"]
 
-    # 3. Publish.
-    p = requests.post(
-        f"{GRAPH}/{IG_USER_ID}/media_publish",
-        data={"creation_id": creation_id, "access_token": TOKEN},
-        timeout=60,
-    )
-    print("publish:", p.status_code, p.text[:300])
-    p.raise_for_status()
-    print("PUBLISHED:", p.json())
-    return 0
+        if DRYRUN:
+            print(f"DRYRUN: container {creation_id} created; not publishing.")
+            continue
+
+        for attempt in range(60):
+            time.sleep(15)
+            s = requests.get(
+                f"{GRAPH}/{creation_id}",
+                params={"fields": "status_code,status", "access_token": TOKEN},
+                timeout=30,
+            )
+            status = s.json().get("status_code", "")
+            print(f"  [{attempt}] status: {status}")
+            if status == "FINISHED":
+                break
+            if status == "EXPIRED":
+                print("Container expired; aborting this reel.")
+                failures += 1
+                break
+        else:
+            print("Processing timed out; the 10-min rerun will retry.")
+            failures += 1
+            continue
+
+        p = requests.post(
+            f"{GRAPH}/{IG_USER_ID}/media_publish",
+            data={"creation_id": creation_id, "access_token": TOKEN},
+            timeout=60,
+        )
+        print("publish:", p.status_code, p.text[:200])
+        p.raise_for_status()
+        print(f"PUBLISHED {day}:", p.json())
+        state["published"].append(state_key)
+        state["last"] = state_key
+        save_state(state, repo)
+
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":

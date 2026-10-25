@@ -17,7 +17,7 @@ on:
         default: ""
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   publish:
@@ -33,5 +33,6 @@ jobs:
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
           DRYRUN: ${{ github.event.inputs.dryrun || 'false' }}
           FORCE_DATE: ${{ github.event.inputs.date || '' }}
