@@ -45,9 +45,19 @@ SPEED = [
     ("2026-10-29", "21:00", "speed5.mp4", "SPEED 5"),
 ]
 
+
+# MrBeast Minecraft (15:00 UTC = 8:30 PM IST / 11 AM ET / 3 PM UK)
+MC = [
+    ("2026-10-27", "15:00", "mc1.mp4", "MC 1"),
+    ("2026-10-28", "15:00", "mc2.mp4", "MC 2"),
+    ("2026-10-29", "20:00", "mc3.mp4", "MC 3"),
+    ("2026-10-30", "15:00", "mc4.mp4", "MC 4"),
+    ("2026-10-31", "20:00", "mc5.mp4", "MC 5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED
+    for d, t, f, c in BLOCK + SPEED + MC
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
