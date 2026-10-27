@@ -55,9 +55,19 @@ MC = [
     ("2026-10-31", "20:00", "mc5.mp4", "MC 5"),
 ]
 
+
+# MrBeast - Escape 100 Cops (Nov 1-5, 2026)
+COPS = [
+    ("2026-11-01", "15:00", "cops1.mp4", "COPS 1"),
+    ("2026-11-02", "15:00", "cops2.mp4", "COPS 2"),
+    ("2026-11-03", "20:00", "cops3.mp4", "COPS 3"),
+    ("2026-11-04", "15:00", "cops4.mp4", "COPS 4"),
+    ("2026-11-05", "20:00", "cops5.mp4", "COPS 5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC
+    for d, t, f, c in BLOCK + SPEED + MC + COPS
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
