@@ -65,9 +65,32 @@ COPS = [
     ("2026-11-05", "20:00", "cops5.mp4", "COPS 5"),
 ]
 
+# Goldmine clips, virality >80, one per day at 19:00 UTC
+GOLD = [
+    ("2026-11-06", "19:00", "gold01.mp4", "GOLD 01"),
+    ("2026-11-07", "19:00", "gold02.mp4", "GOLD 02"),
+    ("2026-11-08", "19:00", "gold03.mp4", "GOLD 03"),
+    ("2026-11-09", "19:00", "gold04.mp4", "GOLD 04"),
+    ("2026-11-10", "19:00", "gold05.mp4", "GOLD 05"),
+    ("2026-11-11", "19:00", "gold06.mp4", "GOLD 06"),
+    ("2026-11-12", "19:00", "gold07.mp4", "GOLD 07"),
+    ("2026-11-13", "19:00", "gold08.mp4", "GOLD 08"),
+    ("2026-11-14", "19:00", "gold09.mp4", "GOLD 09"),
+    ("2026-11-15", "19:00", "gold10.mp4", "GOLD 10"),
+    ("2026-11-16", "19:00", "gold11.mp4", "GOLD 11"),
+    ("2026-11-17", "19:00", "gold12.mp4", "GOLD 12"),
+    ("2026-11-18", "19:00", "gold13.mp4", "GOLD 13"),
+    ("2026-11-19", "19:00", "gold14.mp4", "GOLD 14"),
+    ("2026-11-20", "19:00", "gold15.mp4", "GOLD 15"),
+    ("2026-11-21", "19:00", "gold16.mp4", "GOLD 16"),
+    ("2026-11-22", "19:00", "gold17.mp4", "GOLD 17"),
+    ("2026-11-23", "19:00", "gold18.mp4", "GOLD 18"),
+]
+
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
