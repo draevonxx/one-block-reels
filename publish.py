@@ -122,9 +122,20 @@ SKY = [
     ("2026-11-04", "06:00", "sky5.mp4", "SKY 5"),
 ]
 
+# MrBeast Gaming - If You Escape, You Win $1,000,000 (Nov 5 - Nov 9, 2026).
+# Hand-cut arm: every clip opens on the payoff line, one per day at 06:00 UTC,
+# so the only difference from the Skyblock control is the first spoken second.
+ESC = [
+    ("2026-11-05", "06:00", "escape1.mp4", "ESC 1"),
+    ("2026-11-06", "06:00", "escape2.mp4", "ESC 2"),
+    ("2026-11-07", "06:00", "escape3.mp4", "ESC 3"),
+    ("2026-11-08", "06:00", "escape4.mp4", "ESC 4"),
+    ("2026-11-09", "06:00", "escape5.mp4", "ESC 5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
