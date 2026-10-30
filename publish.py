@@ -88,9 +88,33 @@ GOLD = [
 ]
 
 
+# MrBeast Supo clips (Oct 30 - Nov 8, 2/day at 12:00 & 17:00 UTC)
+SUPO = [
+    ("2026-10-30", "12:00", "supo01.mp4", "SUPO 01"),
+    ("2026-10-30", "17:00", "supo02.mp4", "SUPO 02"),
+    ("2026-10-31", "12:00", "supo03.mp4", "SUPO 03"),
+    ("2026-10-31", "17:00", "supo04.mp4", "SUPO 04"),
+    ("2026-11-01", "12:00", "supo05.mp4", "SUPO 05"),
+    ("2026-11-01", "17:00", "supo06.mp4", "SUPO 06"),
+    ("2026-11-02", "12:00", "supo07.mp4", "SUPO 07"),
+    ("2026-11-02", "17:00", "supo08.mp4", "SUPO 08"),
+    ("2026-11-03", "12:00", "supo09.mp4", "SUPO 09"),
+    ("2026-11-03", "17:00", "supo10.mp4", "SUPO 10"),
+    ("2026-11-04", "12:00", "supo11.mp4", "SUPO 11"),
+    ("2026-11-04", "17:00", "supo12.mp4", "SUPO 12"),
+    ("2026-11-05", "12:00", "supo13.mp4", "SUPO 13"),
+    ("2026-11-05", "17:00", "supo14.mp4", "SUPO 14"),
+    ("2026-11-06", "12:00", "supo15.mp4", "SUPO 15"),
+    ("2026-11-06", "17:00", "supo16.mp4", "SUPO 16"),
+    ("2026-11-07", "12:00", "supo17.mp4", "SUPO 17"),
+    ("2026-11-07", "17:00", "supo18.mp4", "SUPO 18"),
+    ("2026-11-08", "12:00", "supo19.mp4", "SUPO 19"),
+    ("2026-11-08", "17:00", "supo20.mp4", "SUPO 20"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
