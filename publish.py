@@ -200,7 +200,6 @@ def main() -> int:
         if state_key in state.get("published", []):
             print(f"{day}: already published (state); skipping.")
             continue
-            continue
 
         video_url = f"{RAW_BASE.format(repo=repo)}/{file_name}"
         print(f"{day}: publishing {file_name} (due {publish_at.isoformat()}, now {now.isoformat()})")
@@ -268,7 +267,11 @@ def main() -> int:
         )
         print("publish:", p.status_code, p.text[:200])
         p.raise_for_status()
-        print(f"PUBLISHED {day}:", p.json())
+        media_id = p.json().get("id")
+        print(f"PUBLISHED {day}: media_id={media_id}")
+        # The media id is what media_insights is read by; without it a reel's
+        # performance is unrecoverable once the container id expires.
+        state.setdefault("media", {})[state_key] = media_id
         state["published"].append(state_key)
         state["last"] = state_key
         save_state(state, repo)
