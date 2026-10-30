@@ -112,9 +112,18 @@ SUPO = [
     ("2026-11-08", "17:00", "supo20.mp4", "SUPO 20"),
 ]
 
+# MrBeast Gaming - I Survived 100 Days in Skyblock (Oct 31 - Nov 4, 2026)
+SKY = [
+    ("2026-10-31", "06:00", "sky1.mp4", "SKY 1"),
+    ("2026-11-01", "06:00", "sky2.mp4", "SKY 2"),
+    ("2026-11-02", "06:00", "sky3.mp4", "SKY 3"),
+    ("2026-11-03", "06:00", "sky4.mp4", "SKY 4"),
+    ("2026-11-04", "06:00", "sky5.mp4", "SKY 5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
