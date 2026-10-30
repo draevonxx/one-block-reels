@@ -24,6 +24,7 @@ DRYRUN = os.environ.get("DRYRUN", "false").lower() == "true"
 FORCE_DATE = os.environ.get("FORCE_DATE", "").strip()
 
 RAW_BASE = "https://raw.githubusercontent.com/{repo}/main/clips"
+COVER_BASE = "https://raw.githubusercontent.com/{repo}/main/covers"
 STATE_FILE = "state.json"
 
 # One Block series (7 PM IST slots)
@@ -129,6 +130,14 @@ SCHEDULE = [
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
 
 
+def cover_payload(repo: str, file_name: str) -> dict:
+    """Use the committed 9:16 cover for this reel when one exists."""
+    stem = os.path.splitext(file_name)[0]
+    if not os.path.exists(os.path.join("covers", f"{stem}.jpg")):
+        return {}
+    return {"cover_url": f"{COVER_BASE.format(repo=repo)}/{stem}.jpg"}
+
+
 def load_state() -> dict:
     try:
         return json.load(open(STATE_FILE, encoding="utf-8"))
@@ -205,6 +214,7 @@ def main() -> int:
                 "caption": caption,
                 "share_to_feed": "true",
                 "access_token": TOKEN,
+                **cover_payload(repo, file_name),
             },
             timeout=60,
         )
