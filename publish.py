@@ -219,6 +219,21 @@ def main() -> int:
             timeout=60,
         )
         print("container:", r.status_code, r.text[:300])
+        if r.status_code >= 400 and "cover_url" in r.text:
+            # A rejected cover must not cost us the slot; publish without it.
+            print("cover rejected; retrying container without cover_url")
+            r = requests.post(
+                f"{GRAPH}/{IG_USER_ID}/media",
+                data={
+                    "media_type": "REELS",
+                    "video_url": video_url,
+                    "caption": caption,
+                    "share_to_feed": "true",
+                    "access_token": TOKEN,
+                },
+                timeout=60,
+            )
+            print("container:", r.status_code, r.text[:300])
         r.raise_for_status()
         creation_id = r.json()["id"]
 
