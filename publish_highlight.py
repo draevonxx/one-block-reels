@@ -29,9 +29,15 @@ RAW_BASE = "https://raw.githubusercontent.com/{repo}/main/clips-highlight"
 COVER_BASE = "https://raw.githubusercontent.com/{repo}/main/covers-highlight"
 STATE_FILE = "state_highlight.json"
 
-# Paid campaign clips. Fill after the pilot renders; 06:00 UTC = 11:30 AM IST.
+# Paid campaign clips (ClipFarm x Solved with Mark Manson). One per day at
+# 17:00 UTC = 12:00 ET / 9:00 PT / 17:00 UK, timed for the campaign's
+# US/UK/CA/AU view requirement.
 HIGHLIGHT = [
-    # ("2026-11-03", "06:00", "mm01.mp4", "MM 01"),
+    ("2026-11-02", "17:00", "mm01.mp4", "MM 01"),
+    ("2026-11-03", "17:00", "mm02.mp4", "MM 02"),
+    ("2026-11-04", "17:00", "mm03.mp4", "MM 03"),
+    ("2026-11-05", "17:00", "mm04.mp4", "MM 04"),
+    ("2026-11-06", "17:00", "mm05.mp4", "MM 05"),
 ]
 
 SCHEDULE = [
