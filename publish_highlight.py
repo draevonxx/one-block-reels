@@ -112,17 +112,16 @@ def main() -> int:
             f"{entry['date']} {entry['time']}", "%Y-%m-%d %H:%M"
         ).replace(tzinfo=timezone.utc)
 
+        state_key = f"{entry['date']}|{day}"
+        if state_key in state.get("published", []):
+            print(f"{day}: already published (state); skipping.")
+            continue
         if now < publish_at:
             print(f"{day} due at {entry['time']} UTC (in {publish_at - now}); not yet.")
             continue
         if now > publish_at + timedelta(hours=6):
             print(f"{day} window missed (due {publish_at}). Use FORCE_DATE to rerun.")
             failures += 1
-            continue
-
-        state_key = f"{entry['date']}|{day}"
-        if state_key in state.get("published", []):
-            print(f"{day}: already published (state); skipping.")
             continue
 
         video_url = f"{RAW_BASE.format(repo=repo)}/{file_name}"
