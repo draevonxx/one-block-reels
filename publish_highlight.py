@@ -1,0 +1,199 @@
+"""Instagram reel publisher for @thehighlight_____ (GitHub Actions).
+
+Runs every 10 min; publishes each scheduled reel at its planned moment.
+
+Content: paid clipping campaigns from Content Rewards. One campaign clip per
+day during warm-up, never more than two per day after that.
+
+Idempotent: skips when not due, already published (state), or the 6h window
+has lapsed. Multiple reels can share one date.
+"""
+import base64
+import json
+import os
+import sys
+import time
+from datetime import datetime, timedelta, timezone
+
+import requests
+
+# System-user (SUAT) token: publishes through the Facebook host, not
+# graph.instagram.com. Verified against @thehighlight_____ on 2026-11-01.
+GRAPH = "https://graph.facebook.com/v23.0"
+IG_USER_ID = os.environ.get("IG_USER_ID", "")
+TOKEN = os.environ.get("IG_TOKEN", "")
+DRYRUN = os.environ.get("DRYRUN", "false").lower() == "true"
+FORCE_DATE = os.environ.get("FORCE_DATE", "").strip()
+
+RAW_BASE = "https://raw.githubusercontent.com/{repo}/main/clips-highlight"
+COVER_BASE = "https://raw.githubusercontent.com/{repo}/main/covers-highlight"
+STATE_FILE = "state_highlight.json"
+
+# Paid campaign clips. Fill after the pilot renders; 06:00 UTC = 11:30 AM IST.
+HIGHLIGHT = [
+    # ("2026-11-03", "06:00", "mm01.mp4", "MM 01"),
+]
+
+SCHEDULE = [
+    {"date": d, "time": t, "file": f, "caption": c}
+    for d, t, f, c in HIGHLIGHT
+]
+
+CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))
+
+
+def cover_payload(repo: str, file_name: str) -> dict:
+    """Use the committed 9:16 cover for this reel when one exists."""
+    stem = os.path.splitext(file_name)[0]
+    if not os.path.exists(os.path.join("covers-highlight", f"{stem}.jpg")):
+        return {}
+    return {"cover_url": f"{COVER_BASE.format(repo=repo)}/{stem}.jpg"}
+
+
+def load_state() -> dict:
+    try:
+        return json.load(open(STATE_FILE, encoding="utf-8"))
+    except (OSError, ValueError):
+        return {"published": []}
+
+
+def save_state(state: dict, repo: str) -> None:
+    """Commit state file back to the repo (marks the reel as done)."""
+    gh_token = os.environ.get("GITHUB_TOKEN", "")
+    if not gh_token:
+        print("No GITHUB_TOKEN; state not persisted (reruns may duplicate).")
+        return
+    api = f"https://api.github.com/repos/{repo}/contents/{STATE_FILE}"
+    headers = {"Authorization": f"Bearer {gh_token}", "Accept": "application/vnd.github+json"}
+    sha = None
+    existing = requests.get(api, headers=headers, timeout=30)
+    if existing.status_code == 200:
+        sha = existing.json().get("sha")
+    body = {
+        "message": f"state: publish {state['last']}",
+        "content": base64.b64encode(
+            json.dumps(state, ensure_ascii=False, indent=2).encode()
+        ).decode(),
+    }
+    if sha:
+        body["sha"] = sha
+    r = requests.put(api, headers=headers, json=body, timeout=30)
+    print("state commit:", r.status_code)
+
+
+def main() -> int:
+    if not TOKEN or not IG_USER_ID:
+        print("IG_TOKEN_HIGHLIGHT / IG_USER_ID_HIGHLIGHT secrets are not set.")
+        return 1
+
+    now = datetime.now(timezone.utc)
+    today = FORCE_DATE or now.strftime("%Y-%m-%d")
+    todays = [e for e in SCHEDULE if e["date"] == today]
+    if not todays:
+        print(f"No reels scheduled for {today}; nothing to do.")
+        return 0
+
+    failures = 0
+    state = load_state()
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    for entry in todays:
+        file_name = entry["file"]
+        day = entry["caption"]
+        caption = CAPTIONS[day]
+        publish_at = datetime.strptime(
+            f"{entry['date']} {entry['time']}", "%Y-%m-%d %H:%M"
+        ).replace(tzinfo=timezone.utc)
+
+        if now < publish_at:
+            print(f"{day} due at {entry['time']} UTC (in {publish_at - now}); not yet.")
+            continue
+        if now > publish_at + timedelta(hours=6):
+            print(f"{day} window missed (due {publish_at}). Use FORCE_DATE to rerun.")
+            failures += 1
+            continue
+
+        state_key = f"{entry['date']}|{day}"
+        if state_key in state.get("published", []):
+            print(f"{day}: already published (state); skipping.")
+            continue
+
+        video_url = f"{RAW_BASE.format(repo=repo)}/{file_name}"
+        print(f"{day}: publishing {file_name} (due {publish_at.isoformat()}, now {now.isoformat()})")
+        print(f"video_url: {video_url}")
+
+        r = requests.post(
+            f"{GRAPH}/{IG_USER_ID}/media",
+            data={
+                "media_type": "REELS",
+                "video_url": video_url,
+                "caption": caption,
+                "share_to_feed": "true",
+                "access_token": TOKEN,
+                **cover_payload(repo, file_name),
+            },
+            timeout=60,
+        )
+        print("container:", r.status_code, r.text[:300])
+        if r.status_code >= 400 and "cover_url" in r.text:
+            # A rejected cover must not cost us the slot; publish without it.
+            print("cover rejected; retrying container without cover_url")
+            r = requests.post(
+                f"{GRAPH}/{IG_USER_ID}/media",
+                data={
+                    "media_type": "REELS",
+                    "video_url": video_url,
+                    "caption": caption,
+                    "share_to_feed": "true",
+                    "access_token": TOKEN,
+                },
+                timeout=60,
+            )
+            print("container:", r.status_code, r.text[:300])
+        r.raise_for_status()
+        creation_id = r.json()["id"]
+
+        if DRYRUN:
+            print(f"DRYRUN: container {creation_id} created; not publishing.")
+            continue
+
+        for attempt in range(60):
+            time.sleep(15)
+            s = requests.get(
+                f"{GRAPH}/{creation_id}",
+                params={"fields": "status_code,status", "access_token": TOKEN},
+                timeout=30,
+            )
+            status = s.json().get("status_code", "")
+            print(f"  [{attempt}] status: {status}")
+            if status == "FINISHED":
+                break
+            if status == "EXPIRED":
+                print("Container expired; aborting this reel.")
+                failures += 1
+                break
+        else:
+            print("Processing timed out; the 10-min rerun will retry.")
+            failures += 1
+            continue
+
+        p = requests.post(
+            f"{GRAPH}/{IG_USER_ID}/media_publish",
+            data={"creation_id": creation_id, "access_token": TOKEN},
+            timeout=60,
+        )
+        print("publish:", p.status_code, p.text[:200])
+        p.raise_for_status()
+        media_id = p.json().get("id")
+        print(f"PUBLISHED {day}: media_id={media_id}")
+        # The media id is what media_insights is read by; without it a reel's
+        # performance is unrecoverable once the container id expires.
+        state.setdefault("media", {})[state_key] = media_id
+        state["published"].append(state_key)
+        state["last"] = state_key
+        save_state(state, repo)
+
+    return 1 if failures else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

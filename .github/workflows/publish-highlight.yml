@@ -1,0 +1,37 @@
+name: Publish highlight reel
+
+on:
+  schedule:
+    # Every 10 min; publish_highlight.py fires each reel at its planned moment
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      dryrun:
+        description: "Create container only, do not publish"
+        type: boolean
+        default: true
+      date:
+        description: "Force date (YYYY-MM-DD), empty = today"
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - run: python publish_highlight.py
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN_HIGHLIGHT }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID_HIGHLIGHT }}
+          GITHUB_TOKEN: ${{ github.token }}
+          DRYRUN: ${{ github.event.inputs.dryrun || 'false' }}
+          FORCE_DATE: ${{ github.event.inputs.date || '' }}
