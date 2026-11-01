@@ -89,8 +89,10 @@ def save_state(state: dict, repo: str) -> None:
 
 def main() -> int:
     if not TOKEN or not IG_USER_ID:
-        print("IG_TOKEN_HIGHLIGHT / IG_USER_ID_HIGHLIGHT secrets are not set.")
-        return 1
+        # Not a failure: this workflow is scheduled before its secrets exist,
+        # and a non-zero exit would mail the owner every 10 minutes.
+        print("IG_TOKEN_HIGHLIGHT / IG_USER_ID_HIGHLIGHT secrets are not set; skipping.")
+        return 0
 
     now = datetime.now(timezone.utc)
     today = FORCE_DATE or now.strftime("%Y-%m-%d")
