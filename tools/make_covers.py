@@ -24,11 +24,11 @@ TEXT_BOTTOM = 1560  # keeps every headline inside Instagram's 4:5 grid crop
 LINE_GAP = 26
 
 COVERS = {
-    "mm01": dict(t=30, lines=[("ONE VIDEO", WHITE), ("RUINED", YELLOW), ("HER LIFE", WHITE)]),
-    "mm02": dict(t=5, lines=[("HER MOM SAID", WHITE), ("SHE DESERVED", YELLOW), ("IT", WHITE)]),
+    "mm01": dict(t=21, lines=[("I WAS AN", WHITE), ("AWFUL", YELLOW), ("BOYFRIEND", WHITE)]),
+    "mm02": dict(t=17, lines=[("MY GRANDMA CALLED", WHITE), ("MY HEARTBREAK", YELLOW), ("WONDERFUL", WHITE)]),
     "mm03": dict(t=11, lines=[("QUINCY JONES'", WHITE), ("DIVORCE ADVICE", YELLOW)]),
-    "mm04": dict(t=22, lines=[("HE BOMBED", YELLOW), ("ONSTAGE", WHITE)]),
-    "mm05": dict(t=34, lines=[("INSTAGRAM IS A", WHITE), ("SHAME MACHINE", YELLOW)]),
+    "mm04": dict(t=5, lines=[("HER MOM SAID", WHITE), ("SHE DESERVED", YELLOW), ("IT", WHITE)]),
+    "mm05": dict(t=33, lines=[("IF THERE'S NO", WHITE), ("PROBLEM, DON'T", WHITE), ("CREATE ONE", YELLOW)]),
 }
 
 
