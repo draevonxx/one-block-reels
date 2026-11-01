@@ -133,9 +133,17 @@ ESC = [
     ("2026-11-09", "06:00", "escape5.mp4", "ESC 5"),
 ]
 
+# MrBeast - 1 Minute vs 10 Year Build Challenge (Nov 10 - Nov 12, 2026).
+# First free 06:00 slots after the Escape arm; GOLD runs at 19:00, 13h later.
+BLD = [
+    ("2026-11-10", "06:00", "bld1.mp4", "BLD 1"),
+    ("2026-11-11", "06:00", "bld2.mp4", "BLD 2"),
+    ("2026-11-12", "06:00", "bld3.mp4", "BLD 3"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
