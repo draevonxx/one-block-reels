@@ -1,15 +1,18 @@
 {
   "published": [
     "2026-11-01|MM 01",
-    "2026-11-02|FO 01"
+    "2026-11-02|FO 01",
+    "2026-11-02|MM 02"
   ],
   "media": {
     "2026-11-01|MM 01": "18397488439162753",
-    "2026-11-02|FO 01": "17913049437475270"
+    "2026-11-02|FO 01": "17913049437475270",
+    "2026-11-02|MM 02": "17956344843037613"
   },
-  "last": "2026-11-02|FO 01",
+  "last": "2026-11-02|MM 02",
   "links": {
     "2026-11-01|MM 01": "https://www.instagram.com/reel/DfNQ0uBEZfE/",
-    "2026-11-02|FO 01": "https://www.instagram.com/reel/DfPYcRQDVF8/"
+    "2026-11-02|FO 01": "https://www.instagram.com/reel/DfPYcRQDVF8/",
+    "2026-11-02|MM 02": "https://www.instagram.com/reel/DfP3ej-lXm2/"
   }
 }
