@@ -54,14 +54,20 @@ FOMO = [
     ("2026-11-05", "13:00", "fo07.mp4", "FO 07"),
 ]
 
-# ClipFarm x SEGA Virtua Fighter Crossroads. Empty on purpose: the publisher
-# POSTs whatever it is given, so a row only appears once its file is committed
-# to clips-highlight/. Fill it in the same shape as above when the cut clips
-# are staged, two a day at 13:00 and 21:00 UTC (US morning / US afternoon, and
-# the 35% US+Canada audience rule needs those windows). Every sv caption in
-# captions_highlight.json must be the verbatim brief caption - tools/
-# build_sega_caption.py writes them from the .docx so none of it is retyped.
-SEGA = []
+# ClipFarm x SEGA Virtua Fighter Crossroads (Lionel Rafale trailer). Two per day
+# at 13:00 and 21:00 UTC, starting once the Manson and FOMO slates clear on
+# Nov 5: 13:00 hits the US morning and the UK afternoon, 21:00 the US afternoon,
+# which is what the 35% combined USA+Canada audience rule needs. Each sv caption
+# is the verbatim brief caption - tools/build_sega_caption.py writes them from
+# the .docx so none of it is retyped - and each file carries the official logo
+# burned in, because the brief requires it on every post.
+SEGA = [
+    ("2026-11-06", "13:00", "sv01.mp4", "sv01"),
+    ("2026-11-06", "21:00", "sv02.mp4", "sv02"),
+    ("2026-11-07", "13:00", "sv03.mp4", "sv03"),
+    ("2026-11-07", "21:00", "sv04.mp4", "sv04"),
+    ("2026-11-08", "13:00", "sv05.mp4", "sv05"),
+]
 
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
