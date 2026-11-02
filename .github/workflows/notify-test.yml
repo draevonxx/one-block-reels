@@ -1,0 +1,20 @@
+name: Notify path test
+
+# Dispatch-only on purpose: no schedule, so this cannot be caught by GitHub's
+# "disable the schedule after repeated failures" rule, and it never posts.
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  fail-on-purpose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: What this is
+        run: echo "Deliberate failure - proves GitHub mails the owner when a run goes red."
+      - name: Fail
+        run: |
+          echo "If this arrived by email, watch-highlight.yml can reach you too." >&2
+          exit 1
