@@ -40,9 +40,23 @@ HIGHLIGHT = [
     ("2026-11-05", "17:00", "mm05.mp4", "MM 05"),
 ]
 
+# ClipFarm x FOMO (TOKEN2049 Singapore). Two per day at 13:00 and 21:00 UTC,
+# which keeps every FOMO reel 4h clear of the 17:00 Manson slot on this same
+# account, and 8h clear of each other. 13:00 UTC hits the US morning and the UK
+# afternoon; 21:00 UTC hits the US afternoon and the Australian morning.
+FOMO = [
+    ("2026-11-02", "13:00", "fo01.mp4", "FO 01"),
+    ("2026-11-02", "21:00", "fo02.mp4", "FO 02"),
+    ("2026-11-03", "13:00", "fo03.mp4", "FO 03"),
+    ("2026-11-03", "21:00", "fo04.mp4", "FO 04"),
+    ("2026-11-04", "13:00", "fo05.mp4", "FO 05"),
+    ("2026-11-04", "21:00", "fo06.mp4", "FO 06"),
+    ("2026-11-05", "13:00", "fo07.mp4", "FO 07"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in HIGHLIGHT
+    for d, t, f, c in (*HIGHLIGHT, *FOMO)
 ]
 
 CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))
