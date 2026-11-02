@@ -85,6 +85,41 @@ def cover_payload(repo: str, file_name: str) -> dict:
     return {"cover_url": f"{COVER_BASE.format(repo=repo)}/{stem}.jpg"}
 
 
+def fetch_permalink(media_id: str) -> str:
+    """The public post URL - the thing a Content Rewards submission asks for.
+
+    Never raises. A reel that already published must not lose its slot, and its
+    link can be filled in by the next run.
+    """
+    if not media_id:
+        return ""
+    try:
+        r = requests.get(
+            f"{GRAPH}/{media_id}",
+            params={"fields": "permalink", "access_token": TOKEN},
+            timeout=30,
+        )
+        return r.json().get("permalink", "")
+    except (requests.RequestException, ValueError) as exc:
+        print(f"  permalink lookup failed for {media_id}: {exc}")
+        return ""
+
+
+def backfill_links(state: dict) -> bool:
+    """Record links for reels published before links were kept."""
+    links = state.setdefault("links", {})
+    media = state.get("media", {})
+    missing = [k for k in state.get("published", []) if k not in links and media.get(k)]
+    added = 0
+    for key in missing[:6]:
+        link = fetch_permalink(media[key])
+        if link:
+            links[key] = link
+            added += 1
+            print(f"link backfilled {key}: {link}")
+    return bool(added)
+
+
 def load_state() -> dict:
     try:
         return json.load(open(STATE_FILE, encoding="utf-8"))
@@ -105,7 +140,7 @@ def save_state(state: dict, repo: str) -> None:
     if existing.status_code == 200:
         sha = existing.json().get("sha")
     body = {
-        "message": f"state: publish {state['last']}",
+        "message": f"state: {state.get('last', 'links backfilled')}",
         "content": base64.b64encode(
             json.dumps(state, ensure_ascii=False, indent=2).encode()
         ).decode(),
@@ -126,13 +161,21 @@ def main() -> int:
     now = datetime.now(timezone.utc)
     today = FORCE_DATE or now.strftime("%Y-%m-%d")
     todays = [e for e in SCHEDULE if e["date"] == today]
-    if not todays:
-        print(f"No reels scheduled for {today}; nothing to do.")
-        return 0
 
     failures = 0
     state = load_state()
     repo = os.environ.get("GITHUB_REPOSITORY", "")
+    try:
+        if backfill_links(state):
+            save_state(state, repo)
+    except Exception as exc:
+        # Bookkeeping only. A link that will not resolve must not cost a slot
+        # that is due in the next few minutes.
+        print(f"link backfill skipped: {exc}")
+
+    if not todays:
+        print(f"No reels scheduled for {today}; nothing to do.")
+        return 0
     for entry in todays:
         file_name = entry["file"]
         day = entry["caption"]
@@ -220,10 +263,13 @@ def main() -> int:
         print("publish:", p.status_code, p.text[:200])
         p.raise_for_status()
         media_id = p.json().get("id")
-        print(f"PUBLISHED {day}: media_id={media_id}")
         # The media id is what media_insights is read by; without it a reel's
         # performance is unrecoverable once the container id expires.
         state.setdefault("media", {})[state_key] = media_id
+        link = fetch_permalink(media_id)
+        if link:
+            state.setdefault("links", {})[state_key] = link
+        print(f"PUBLISHED {day}: media_id={media_id} link={link or 'not yet resolved'}")
         state["published"].append(state_key)
         state["last"] = state_key
         save_state(state, repo)
