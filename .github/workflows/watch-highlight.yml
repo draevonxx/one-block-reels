@@ -1,0 +1,22 @@
+name: Watch highlight publishing
+
+on:
+  schedule:
+    # Throttled to roughly hourly on the free tier; the alert threshold in
+    # watch_highlight.py is 2h, so this still catches a stall early.
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python watch_highlight.py
