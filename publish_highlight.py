@@ -54,9 +54,18 @@ FOMO = [
     ("2026-11-05", "13:00", "fo07.mp4", "FO 07"),
 ]
 
+# ClipFarm x SEGA Virtua Fighter Crossroads. Empty on purpose: the publisher
+# POSTs whatever it is given, so a row only appears once its file is committed
+# to clips-highlight/. Fill it in the same shape as above when the cut clips
+# are staged, two a day at 13:00 and 21:00 UTC (US morning / US afternoon, and
+# the 35% US+Canada audience rule needs those windows). Every sv caption in
+# captions_highlight.json must be the verbatim brief caption - tools/
+# build_sega_caption.py writes them from the .docx so none of it is retyped.
+SEGA = []
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in (*HIGHLIGHT, *FOMO)
+    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA)
 ]
 
 CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))

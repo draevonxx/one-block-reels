@@ -23,16 +23,29 @@ ALERT_AFTER = timedelta(hours=2)
 PUBLISH_WINDOW = timedelta(hours=6)
 
 
+CAMPAIGNS = ("HIGHLIGHT", "FOMO", "SEGA")
+
+
 def scheduled_entries(source: Path) -> list[dict]:
-    """Read the HIGHLIGHT and FOMO tuples straight out of the publisher."""
+    """Read every campaign tuple straight out of the publisher.
+
+    A campaign list that this watchdog does not know about is a silent gap in
+    the alarm, so the names are required rather than optional: adding a list to
+    publish_highlight.py without adding it here fails the next watchdog run.
+    """
     tree = ast.parse(source.read_text(encoding="utf-8"))
     rows = {}
     for node in tree.body:
-        if not (isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name)):
+        if isinstance(node, ast.Assign):
+            names = [t for t in node.targets if isinstance(t, ast.Name)]
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            names = [node.target]
+        else:
             continue
-        if node.targets[0].id in ("HIGHLIGHT", "FOMO"):
-            rows[node.targets[0].id] = ast.literal_eval(node.value)
-    missing = {"HIGHLIGHT", "FOMO"} - set(rows)
+        for name in names:
+            if name.id in CAMPAIGNS and node.value is not None:
+                rows[name.id] = ast.literal_eval(node.value)
+    missing = set(CAMPAIGNS) - set(rows)
     if missing:
         raise SystemExit(
             f"{source} no longer defines {sorted(missing)}; update this watchdog"
