@@ -166,9 +166,31 @@ LEBRON = [
     ("2026-11-17", "12:00", "lbr5.mp4", "LBR 5"),
 ]
 
+# MrBeast - Survive 100 Days In Prison, Win $500,000 (Nov 18 - Nov 22, 2026).
+# Shares the lane with EXPLOSION at 3/day: 06:00 / 09:00 / 12:00 UTC.
+PRISON = [
+    ("2026-11-18", "06:00", "pr5.mp4", "PRI 5"),
+    ("2026-11-18", "12:00", "pr1.mp4", "PRI 1"),
+    ("2026-11-19", "09:00", "pr4.mp4", "PRI 4"),
+    ("2026-11-20", "06:00", "pr6.mp4", "PRI 6"),
+    ("2026-11-20", "12:00", "pr3.mp4", "PRI 3"),
+    ("2026-11-21", "09:00", "pr8.mp4", "PRI 8"),
+    ("2026-11-21", "12:00", "pr2.mp4", "PRI 2"),
+    ("2026-11-22", "06:00", "pr7.mp4", "PRI 7"),
+]
+
+# MrBeast Gaming - $10,000 Every Explosion You Survive (Nov 18 - Nov 21, 2026).
+EXPLOSION = [
+    ("2026-11-18", "09:00", "exp1.mp4", "EXP 1"),
+    ("2026-11-19", "06:00", "exp5.mp4", "EXP 5"),
+    ("2026-11-19", "12:00", "exp3.mp4", "EXP 3"),
+    ("2026-11-20", "09:00", "exp2.mp4", "EXP 2"),
+    ("2026-11-21", "06:00", "exp4.mp4", "EXP 4"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
