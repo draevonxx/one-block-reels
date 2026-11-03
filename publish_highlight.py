@@ -24,6 +24,10 @@ IG_USER_ID = os.environ.get("IG_USER_ID", "")
 TOKEN = os.environ.get("IG_TOKEN", "")
 DRYRUN = os.environ.get("DRYRUN", "false").lower() == "true"
 FORCE_DATE = os.environ.get("FORCE_DATE", "").strip()
+# A caption label ("MM 02"): delete that reel and put it back up now, ignoring
+# the ledger and the 6h window. Campaign submissions have a short clock, so a
+# slot that posted while nobody was awake has to be replayed to be submittable.
+REPOST = os.environ.get("REPOST", "").strip()
 
 RAW_BASE = "https://raw.githubusercontent.com/{repo}/main/clips-highlight"
 COVER_BASE = "https://raw.githubusercontent.com/{repo}/main/covers-highlight"
@@ -83,6 +87,31 @@ def cover_payload(repo: str, file_name: str) -> dict:
     if not os.path.exists(os.path.join("covers-highlight", f"{stem}.jpg")):
         return {}
     return {"cover_url": f"{COVER_BASE.format(repo=repo)}/{stem}.jpg"}
+
+
+def delete_media(media_id: str) -> bool:
+    """Delete a reel this publisher put up, so a repost can replace it.
+
+    The Content Publishing API only lets you delete what the API itself created,
+    which is every reel in this ledger. Returns False on any doubt - a repost
+    that cannot prove the old post is gone must not create a second copy.
+    """
+    if not media_id:
+        return False
+    try:
+        r = requests.delete(
+            f"{GRAPH}/{media_id}", params={"access_token": TOKEN}, timeout=60
+        )
+    except requests.RequestException as exc:
+        print(f"  delete request failed for {media_id}: {exc}")
+        return False
+    print("delete:", r.status_code, r.text[:200])
+    if r.status_code >= 400:
+        return False
+    try:
+        return bool(r.json().get("success", True))
+    except ValueError:
+        return True
 
 
 def fetch_permalink(media_id: str) -> str:
@@ -158,11 +187,20 @@ def main() -> int:
         print("IG_TOKEN_HIGHLIGHT / IG_USER_ID_HIGHLIGHT secrets are not set; skipping.")
         return 0
 
+    if REPOST and DRYRUN:
+        # Dry run means "do not publish", but the delete would already be done.
+        print("REPOST with dry-run would delete the live reel and not replace it; refusing.")
+        return 1
+    if REPOST and not FORCE_DATE:
+        print(f"REPOST {REPOST}: pass the date that reel is scheduled for as well.")
+        return 1
+
     now = datetime.now(timezone.utc)
     today = FORCE_DATE or now.strftime("%Y-%m-%d")
     todays = [e for e in SCHEDULE if e["date"] == today]
 
     failures = 0
+    replayed = 0
     state = load_state()
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     try:
@@ -185,16 +223,28 @@ def main() -> int:
         ).replace(tzinfo=timezone.utc)
 
         state_key = f"{entry['date']}|{day}"
-        if state_key in state.get("published", []):
-            print(f"{day}: already published (state); skipping.")
-            continue
-        if now < publish_at:
-            print(f"{day} due at {entry['time']} UTC (in {publish_at - now}); not yet.")
-            continue
-        if now > publish_at + timedelta(hours=6):
-            print(f"{day} window missed (due {publish_at}). Use FORCE_DATE to rerun.")
-            failures += 1
-            continue
+        if REPOST:
+            if day != REPOST:
+                continue
+            replayed += 1
+            old = state.get("media", {}).get(state_key, "")
+            print(f"REPOST {day}: taking down {old or 'nothing (no media id recorded)'}")
+            if old and not delete_media(old):
+                print("REPOST aborted: the live reel is still up, so nothing new goes out.")
+                return 1
+            state["published"] = [k for k in state.get("published", []) if k != state_key]
+            state.get("links", {}).pop(state_key, None)
+        else:
+            if state_key in state.get("published", []):
+                print(f"{day}: already published (state); skipping.")
+                continue
+            if now < publish_at:
+                print(f"{day} due at {entry['time']} UTC (in {publish_at - now}); not yet.")
+                continue
+            if now > publish_at + timedelta(hours=6):
+                print(f"{day} window missed (due {publish_at}). Use FORCE_DATE to rerun.")
+                failures += 1
+                continue
 
         video_url = f"{RAW_BASE.format(repo=repo)}/{file_name}"
         print(f"{day}: publishing {file_name} (due {publish_at.isoformat()}, now {now.isoformat()})")
@@ -273,6 +323,10 @@ def main() -> int:
         state["published"].append(state_key)
         state["last"] = state_key
         save_state(state, repo)
+
+    if REPOST and not replayed:
+        print(f"REPOST {REPOST!r} matched nothing on {today}; check the label and the date.")
+        return 1
 
     return 1 if failures else 0
 

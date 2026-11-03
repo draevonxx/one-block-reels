@@ -14,6 +14,10 @@ on:
         description: "Force date (YYYY-MM-DD), empty = today"
         type: string
         default: ""
+      repost:
+        description: "Caption label to take down and publish again (e.g. MM 02); needs date"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -35,3 +39,4 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           DRYRUN: ${{ github.event.inputs.dryrun || 'false' }}
           FORCE_DATE: ${{ github.event.inputs.date || '' }}
+          REPOST: ${{ github.event.inputs.repost || '' }}
