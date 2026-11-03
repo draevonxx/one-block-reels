@@ -141,9 +141,24 @@ BLD = [
     ("2026-11-12", "06:00", "bld3.mp4", "BLD 3"),
 ]
 
+# MrBeast - Survive 1000 Days, Win $100,000 (Nov 13 - Nov 16, 2026).
+# First 3-clips-a-day arm: 06:00 / 09:00 / 12:00 UTC, a 3h gap on this lane.
+ONEK = [
+    ("2026-11-13", "06:00", "d1000_1.mp4", "1KD 1"),
+    ("2026-11-13", "09:00", "d1000_2.mp4", "1KD 2"),
+    ("2026-11-13", "12:00", "d1000_3.mp4", "1KD 3"),
+    ("2026-11-14", "06:00", "d1000_4.mp4", "1KD 4"),
+    ("2026-11-14", "09:00", "d1000_5.mp4", "1KD 5"),
+    ("2026-11-14", "12:00", "d1000_6.mp4", "1KD 6"),
+    ("2026-11-15", "06:00", "d1000_7.mp4", "1KD 7"),
+    ("2026-11-15", "09:00", "d1000_8.mp4", "1KD 8"),
+    ("2026-11-15", "12:00", "d1000_9.mp4", "1KD 9"),
+    ("2026-11-16", "06:00", "d1000_10.mp4", "1KD 10"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
