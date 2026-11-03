@@ -156,9 +156,19 @@ ONEK = [
     ("2026-11-16", "06:00", "d1000_10.mp4", "1KD 10"),
 ]
 
+# MrBeast - Beat LeBron In Basketball, Win $100,000 (Nov 16 - Nov 17, 2026).
+# Tops up Nov 16's remaining slots, then a full 3-a-day on Nov 17.
+LEBRON = [
+    ("2026-11-16", "09:00", "lbr1.mp4", "LBR 1"),
+    ("2026-11-16", "12:00", "lbr2.mp4", "LBR 2"),
+    ("2026-11-17", "06:00", "lbr3.mp4", "LBR 3"),
+    ("2026-11-17", "09:00", "lbr4.mp4", "LBR 4"),
+    ("2026-11-17", "12:00", "lbr5.mp4", "LBR 5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
