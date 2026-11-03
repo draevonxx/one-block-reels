@@ -34,43 +34,49 @@ COVER_BASE = "https://raw.githubusercontent.com/{repo}/main/covers-highlight"
 STATE_FILE = "state_highlight.json"
 
 # Paid campaign clips (ClipFarm x Solved with Mark Manson). One per day at
-# 17:00 UTC = 12:00 ET / 9:00 PT / 17:00 UK, timed for the campaign's
-# US/UK/CA/AU view requirement.
+# 11:00 UTC = 16:30 IST, the earliest slot in the operator's waking window
+# (16:00-22:00 IST = 10:30-16:30 UTC), so the reel lands while he is awake to
+# submit it inside Content Rewards' 30-minute clock.
+# Trade-off, accepted deliberately: 11:00 UTC is 06:00 ET / 04:00 PT, so the
+# Manson audience sees it on the morning scroll rather than the US evening one
+# the old 17:00 UTC slot bought.
 HIGHLIGHT = [
     ("2026-11-01", "17:00", "mm01.mp4", "MM 01"),
     ("2026-11-02", "17:00", "mm02.mp4", "MM 02"),
-    ("2026-11-03", "17:00", "mm03.mp4", "MM 03"),
-    ("2026-11-04", "17:00", "mm04.mp4", "MM 04"),
-    ("2026-11-05", "17:00", "mm05.mp4", "MM 05"),
+    ("2026-11-03", "11:00", "mm03.mp4", "MM 03"),
+    ("2026-11-04", "11:00", "mm04.mp4", "MM 04"),
+    ("2026-11-05", "11:00", "mm05.mp4", "MM 05"),
 ]
 
-# ClipFarm x FOMO (TOKEN2049 Singapore). Two per day at 13:00 and 21:00 UTC,
-# which keeps every FOMO reel 4h clear of the 17:00 Manson slot on this same
-# account, and 8h clear of each other. 13:00 UTC hits the US morning and the UK
-# afternoon; 21:00 UTC hits the US afternoon and the Australian morning.
+# ClipFarm x FOMO (TOKEN2049 Singapore). Two per day at 13:30 and 16:00 UTC,
+# both inside the 10:30-16:30 UTC waking window and 2h clear of the 11:00 Manson
+# slot on this same account. 13:30 UTC hits the US morning and the UK afternoon;
+# 16:00 UTC hits the US late morning and the UK evening, but no longer the
+# Australian morning the old 21:00 slot covered.
 FOMO = [
     ("2026-11-02", "13:00", "fo01.mp4", "FO 01"),
     ("2026-11-02", "21:00", "fo02.mp4", "FO 02"),
     ("2026-11-03", "13:00", "fo03.mp4", "FO 03"),
-    ("2026-11-03", "21:00", "fo04.mp4", "FO 04"),
-    ("2026-11-04", "13:00", "fo05.mp4", "FO 05"),
-    ("2026-11-04", "21:00", "fo06.mp4", "FO 06"),
-    ("2026-11-05", "13:00", "fo07.mp4", "FO 07"),
+    ("2026-11-03", "16:00", "fo04.mp4", "FO 04"),
+    ("2026-11-04", "13:30", "fo05.mp4", "FO 05"),
+    ("2026-11-04", "16:00", "fo06.mp4", "FO 06"),
+    ("2026-11-05", "13:30", "fo07.mp4", "FO 07"),
 ]
 
 # ClipFarm x SEGA Virtua Fighter Crossroads (Lionel Rafale trailer). Two per day
-# at 13:00 and 21:00 UTC, starting once the Manson and FOMO slates clear on
-# Nov 5: 13:00 hits the US morning and the UK afternoon, 21:00 the US afternoon,
-# which is what the 35% combined USA+Canada audience rule needs. Each sv caption
-# is the verbatim brief caption - tools/build_sega_caption.py writes them from
-# the .docx so none of it is retyped - and each file carries the official logo
-# burned in, because the brief requires it on every post.
+# at 13:30 and 16:00 UTC, inside the waking window, starting once the Manson and
+# FOMO slates clear on Nov 5. 13:30 hits the US morning and 16:00 the US late
+# morning - both still aimed at the 35% combined USA+Canada audience rule, which
+# is the constraint that matters, though neither is the US prime-time slot.
+# Each sv caption is the verbatim brief caption - tools/build_sega_caption.py
+# writes them from the .docx so none of it is retyped - and each file carries the
+# official logo burned in, because the brief requires it on every post.
 SEGA = [
-    ("2026-11-06", "13:00", "sv01.mp4", "sv01"),
-    ("2026-11-06", "21:00", "sv02.mp4", "sv02"),
-    ("2026-11-07", "13:00", "sv03.mp4", "sv03"),
-    ("2026-11-07", "21:00", "sv04.mp4", "sv04"),
-    ("2026-11-08", "13:00", "sv05.mp4", "sv05"),
+    ("2026-11-06", "13:30", "sv01.mp4", "sv01"),
+    ("2026-11-06", "16:00", "sv02.mp4", "sv02"),
+    ("2026-11-07", "13:30", "sv03.mp4", "sv03"),
+    ("2026-11-07", "16:00", "sv04.mp4", "sv04"),
+    ("2026-11-08", "13:30", "sv05.mp4", "sv05"),
 ]
 
 SCHEDULE = [
