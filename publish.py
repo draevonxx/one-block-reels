@@ -188,9 +188,21 @@ EXPLOSION = [
     ("2026-11-21", "06:00", "exp4.mp4", "EXP 4"),
 ]
 
+# GTA V story mode, 5-part arc (Nov 6 - Nov 10, 2026).
+# 03:00 UTC, not the 04:00 the YouTube lane uses: 04:00 would land 2h before
+# this account's existing 06:00 reel, and 3h is the tightest gap this lane
+# already runs. 03:00 = 8pm ET the evening before, 08:30 IST.
+GTA = [
+    ("2026-11-06", "03:00", "gta1.mp4", "GTA 1"),
+    ("2026-11-07", "03:00", "gta2.mp4", "GTA 2"),
+    ("2026-11-08", "03:00", "gta3.mp4", "GTA 3"),
+    ("2026-11-09", "03:00", "gta4.mp4", "GTA 4"),
+    ("2026-11-10", "03:00", "gta5.mp4", "GTA 5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
