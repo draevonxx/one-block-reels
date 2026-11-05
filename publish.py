@@ -207,6 +207,12 @@ SCHEDULE = [
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
 
+# Written by tools/ig_hook_manifest.py in the parent pipeline. A reel listed here
+# as SHORT/LONG/NO_TEASER provably opens without its cold-open teaser, so it never
+# ships; unjudged reels (no matching source clip) air with a warning.
+HOOK_GATE = (json.load(open("hook_gate.json", encoding="utf-8"))
+             if os.path.exists("hook_gate.json") else {})
+
 
 def cover_payload(repo: str, file_name: str) -> dict:
     """Use the committed 9:16 cover for this reel when one exists."""
@@ -270,6 +276,15 @@ def main() -> int:
         if state_key in state.get("published", []):
             print(f"{day}: already published (state); skipping.")
             continue
+        # Checked before the timing gates so the log names a held reel on every
+        # run, and a held reel never counts as a missed publish window.
+        gate = (HOOK_GATE.get("reels") or {}).get(file_name)
+        if gate:
+            if gate.get("status") in (HOOK_GATE.get("blocking") or []):
+                print(f"{day}: HELD by hook gate ({gate['status']}: {gate.get('note', '')}).")
+                continue
+            if gate.get("status") != "PASS":
+                print(f"{day}: no cold-open proof ({gate['status']}); airing anyway.")
         if now < publish_at:
             print(f"{day} due at {entry['time']} UTC (in {publish_at - now}); not yet.")
             continue

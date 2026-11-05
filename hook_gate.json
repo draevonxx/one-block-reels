@@ -1,0 +1,612 @@
+{
+ "generated_by": "tools/ig_hook_manifest.py",
+ "blocking": [
+  "LONG",
+  "NO_TEASER",
+  "SHORT"
+ ],
+ "reels": {
+  "day1.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "DAY 1"
+  },
+  "day2.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "DAY 2"
+  },
+  "day3.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "DAY 3"
+  },
+  "day4.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "DAY 4"
+  },
+  "day5.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "DAY 5"
+  },
+  "day6.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "DAY 6"
+  },
+  "day7.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "DAY 7"
+  },
+  "speed1.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SPEED 1"
+  },
+  "speed2.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SPEED 2"
+  },
+  "speed3.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SPEED 3"
+  },
+  "speed4.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SPEED 4"
+  },
+  "speed5.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SPEED 5"
+  },
+  "mc1.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "MC 1"
+  },
+  "mc2.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "MC 2"
+  },
+  "mc3.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "MC 3"
+  },
+  "mc4.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "MC 4"
+  },
+  "mc5.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "MC 5"
+  },
+  "cops1.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "COPS 1"
+  },
+  "cops2.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "COPS 2"
+  },
+  "cops3.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "COPS 3"
+  },
+  "cops4.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "COPS 4"
+  },
+  "cops5.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "COPS 5"
+  },
+  "gold01.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 01"
+  },
+  "gold02.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 02"
+  },
+  "gold03.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 03"
+  },
+  "gold04.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 04"
+  },
+  "gold05.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 05"
+  },
+  "gold06.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 06"
+  },
+  "gold07.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 07"
+  },
+  "gold08.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 08"
+  },
+  "gold09.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 09"
+  },
+  "gold10.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 10"
+  },
+  "gold11.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 11"
+  },
+  "gold12.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 12"
+  },
+  "gold13.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 13"
+  },
+  "gold14.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 14"
+  },
+  "gold15.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 15"
+  },
+  "gold16.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 16"
+  },
+  "gold17.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 17"
+  },
+  "gold18.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GOLD 18"
+  },
+  "supo01.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 01"
+  },
+  "supo02.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 02"
+  },
+  "supo03.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 03"
+  },
+  "supo04.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 04"
+  },
+  "supo05.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 05"
+  },
+  "supo06.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 06"
+  },
+  "supo07.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 07"
+  },
+  "supo08.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 08"
+  },
+  "supo09.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 09"
+  },
+  "supo10.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 10"
+  },
+  "supo11.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 11"
+  },
+  "supo12.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 12"
+  },
+  "supo13.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 13"
+  },
+  "supo14.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 14"
+  },
+  "supo15.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 15"
+  },
+  "supo16.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 16"
+  },
+  "supo17.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 17"
+  },
+  "supo18.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 18"
+  },
+  "supo19.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 19"
+  },
+  "supo20.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SUPO 20"
+  },
+  "sky1.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SKY 1"
+  },
+  "sky2.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SKY 2"
+  },
+  "sky3.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SKY 3"
+  },
+  "sky4.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SKY 4"
+  },
+  "sky5.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "SKY 5"
+  },
+  "escape1.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "ESC 1"
+  },
+  "escape2.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "ESC 2"
+  },
+  "escape3.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "ESC 3"
+  },
+  "escape4.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "ESC 4"
+  },
+  "escape5.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "ESC 5"
+  },
+  "bld1.mp4": {
+   "status": "NO_TEASER",
+   "note": "single span, opens on its own body",
+   "clip": "Build #1",
+   "position": 31,
+   "label": "BLD 1"
+  },
+  "bld2.mp4": {
+   "status": "NO_TEASER",
+   "note": "single span, opens on its own body",
+   "clip": "Build #2",
+   "position": 32,
+   "label": "BLD 2"
+  },
+  "bld3.mp4": {
+   "status": "NO_TEASER",
+   "note": "single span, opens on its own body",
+   "clip": "Build #3",
+   "position": 33,
+   "label": "BLD 3"
+  },
+  "d1000_1.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "1000 Days #1",
+   "position": 34,
+   "label": "1KD 1"
+  },
+  "d1000_2.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "1000 Days #2",
+   "position": 35,
+   "label": "1KD 2"
+  },
+  "d1000_3.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "1000 Days #3",
+   "position": 36,
+   "label": "1KD 3"
+  },
+  "d1000_4.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "1000 Days #4",
+   "position": 37,
+   "label": "1KD 4"
+  },
+  "d1000_5.mp4": {
+   "status": "NO_TEASER",
+   "note": "single span, opens on its own body",
+   "clip": "1000 Days #5",
+   "position": 38,
+   "label": "1KD 5"
+  },
+  "d1000_6.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "1000 Days #6",
+   "position": 39,
+   "label": "1KD 6"
+  },
+  "d1000_7.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "1000 Days #7",
+   "position": 40,
+   "label": "1KD 7"
+  },
+  "d1000_8.mp4": {
+   "status": "NO_TEASER",
+   "note": "single span, opens on its own body",
+   "clip": "1000 Days #8",
+   "position": 41,
+   "label": "1KD 8"
+  },
+  "d1000_9.mp4": {
+   "status": "NO_TEASER",
+   "note": "single span, opens on its own body",
+   "clip": "1000 Days #9",
+   "position": 42,
+   "label": "1KD 9"
+  },
+  "d1000_10.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "1000 Days #10",
+   "position": 43,
+   "label": "1KD 10"
+  },
+  "lbr1.mp4": {
+   "status": "PASS",
+   "note": "4.7s teaser, jumps 20s ahead",
+   "clip": "LeBron #1",
+   "position": 44,
+   "label": "LBR 1"
+  },
+  "lbr2.mp4": {
+   "status": "SHORT",
+   "note": "2.8s teaser is under the 3s brief",
+   "clip": "LeBron #2",
+   "position": 45,
+   "label": "LBR 2"
+  },
+  "lbr3.mp4": {
+   "status": "PASS",
+   "note": "2.98s teaser, jumps 18s ahead",
+   "clip": "LeBron #3",
+   "position": 46,
+   "label": "LBR 3"
+  },
+  "lbr4.mp4": {
+   "status": "SHORT",
+   "note": "2.7s teaser is under the 3s brief",
+   "clip": "LeBron #4",
+   "position": 47,
+   "label": "LBR 4"
+  },
+  "lbr5.mp4": {
+   "status": "PASS",
+   "note": "4.28s teaser, jumps 18s ahead",
+   "clip": "LeBron #5",
+   "position": 48,
+   "label": "LBR 5"
+  },
+  "pr5.mp4": {
+   "status": "PASS",
+   "note": "4.54s teaser, jumps 5s ahead",
+   "clip": "Prison #5",
+   "position": 49,
+   "label": "PRI 5"
+  },
+  "pr1.mp4": {
+   "status": "PASS",
+   "note": "4.27s teaser, jumps 6s ahead",
+   "clip": "Prison #1",
+   "position": 51,
+   "label": "PRI 1"
+  },
+  "pr4.mp4": {
+   "status": "SHORT",
+   "note": "1.7s teaser is under the 3s brief",
+   "clip": "Prison #4",
+   "position": 53,
+   "label": "PRI 4"
+  },
+  "pr6.mp4": {
+   "status": "SHORT",
+   "note": "2.04s teaser is under the 3s brief",
+   "clip": "Prison #6",
+   "position": 55,
+   "label": "PRI 6"
+  },
+  "pr3.mp4": {
+   "status": "PASS",
+   "note": "4.22s teaser, jumps 28s ahead",
+   "clip": "Prison #3",
+   "position": 57,
+   "label": "PRI 3"
+  },
+  "pr8.mp4": {
+   "status": "PASS",
+   "note": "3.18s teaser, jumps 6s ahead",
+   "clip": "Prison #8",
+   "position": 59,
+   "label": "PRI 8"
+  },
+  "pr2.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "Prison #2",
+   "position": 60,
+   "label": "PRI 2"
+  },
+  "pr7.mp4": {
+   "status": "NO_TEASER",
+   "note": "spans chronological, no teaser prepended",
+   "clip": "Prison #7",
+   "position": 61,
+   "label": "PRI 7"
+  },
+  "exp1.mp4": {
+   "status": "SHORT",
+   "note": "2.93s teaser is under the 3s brief",
+   "clip": "Explosion #1",
+   "position": 50,
+   "label": "EXP 1"
+  },
+  "exp5.mp4": {
+   "status": "PASS",
+   "note": "3.69s teaser, jumps 40s ahead",
+   "clip": "Explosion #5",
+   "position": 52,
+   "label": "EXP 5"
+  },
+  "exp3.mp4": {
+   "status": "PASS",
+   "note": "3.26s teaser, jumps 14s ahead",
+   "clip": "Explosion #3",
+   "position": 54,
+   "label": "EXP 3"
+  },
+  "exp2.mp4": {
+   "status": "PASS",
+   "note": "3.14s teaser, jumps 25s ahead",
+   "clip": "Explosion #2",
+   "position": 56,
+   "label": "EXP 2"
+  },
+  "exp4.mp4": {
+   "status": "PASS",
+   "note": "3.52s teaser, jumps 24s ahead",
+   "clip": "Explosion #4",
+   "position": 58,
+   "label": "EXP 4"
+  },
+  "gta1.mp4": {
+   "status": "NO_SIDECAR",
+   "note": "no source_map.json sidecar",
+   "clip": "GTA #1",
+   "position": 62,
+   "label": "GTA 1"
+  },
+  "gta2.mp4": {
+   "status": "NO_SIDECAR",
+   "note": "no source_map.json sidecar",
+   "clip": "GTA #2",
+   "position": 63,
+   "label": "GTA 2"
+  },
+  "gta3.mp4": {
+   "status": "NO_SIDECAR",
+   "note": "no source_map.json sidecar",
+   "clip": "GTA #3",
+   "position": 64,
+   "label": "GTA 3"
+  },
+  "gta4.mp4": {
+   "status": "NO_SIDECAR",
+   "note": "no source_map.json sidecar",
+   "clip": "GTA #4",
+   "position": 65,
+   "label": "GTA 4"
+  },
+  "gta5.mp4": {
+   "status": "NO_SIDECAR",
+   "note": "no source_map.json sidecar",
+   "clip": "GTA #5",
+   "position": 66,
+   "label": "GTA 5"
+  }
+ }
+}
