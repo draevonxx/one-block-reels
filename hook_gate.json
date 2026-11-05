@@ -357,92 +357,92 @@
    "label": "ESC 5"
   },
   "bld1.mp4": {
-   "status": "NO_TEASER",
-   "note": "single span, opens on its own body",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 5s ahead",
    "clip": "Build #1",
    "position": 31,
    "label": "BLD 1"
   },
   "bld2.mp4": {
-   "status": "NO_TEASER",
-   "note": "single span, opens on its own body",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 8s ahead",
    "clip": "Build #2",
    "position": 32,
    "label": "BLD 2"
   },
   "bld3.mp4": {
-   "status": "NO_TEASER",
-   "note": "single span, opens on its own body",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 3s ahead",
    "clip": "Build #3",
    "position": 33,
    "label": "BLD 3"
   },
   "d1000_1.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 27s ahead",
    "clip": "1000 Days #1",
    "position": 34,
    "label": "1KD 1"
   },
   "d1000_2.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 3s ahead",
    "clip": "1000 Days #2",
    "position": 35,
    "label": "1KD 2"
   },
   "d1000_3.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 25s ahead",
    "clip": "1000 Days #3",
    "position": 36,
    "label": "1KD 3"
   },
   "d1000_4.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "4.7s teaser, jumps 31s ahead",
    "clip": "1000 Days #4",
    "position": 37,
    "label": "1KD 4"
   },
   "d1000_5.mp4": {
-   "status": "NO_TEASER",
-   "note": "single span, opens on its own body",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 13s ahead",
    "clip": "1000 Days #5",
    "position": 38,
    "label": "1KD 5"
   },
   "d1000_6.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "3.0s teaser, jumps 32s ahead",
    "clip": "1000 Days #6",
    "position": 39,
    "label": "1KD 6"
   },
   "d1000_7.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 10s ahead",
    "clip": "1000 Days #7",
    "position": 40,
    "label": "1KD 7"
   },
   "d1000_8.mp4": {
-   "status": "NO_TEASER",
-   "note": "single span, opens on its own body",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 6s ahead",
    "clip": "1000 Days #8",
    "position": 41,
    "label": "1KD 8"
   },
   "d1000_9.mp4": {
-   "status": "NO_TEASER",
-   "note": "single span, opens on its own body",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 7s ahead",
    "clip": "1000 Days #9",
    "position": 42,
    "label": "1KD 9"
   },
   "d1000_10.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 4s ahead",
    "clip": "1000 Days #10",
    "position": 43,
    "label": "1KD 10"
@@ -455,8 +455,8 @@
    "label": "LBR 1"
   },
   "lbr2.mp4": {
-   "status": "SHORT",
-   "note": "2.8s teaser is under the 3s brief",
+   "status": "PASS",
+   "note": "4.32s teaser, jumps 47s ahead",
    "clip": "LeBron #2",
    "position": 45,
    "label": "LBR 2"
@@ -469,8 +469,8 @@
    "label": "LBR 3"
   },
   "lbr4.mp4": {
-   "status": "SHORT",
-   "note": "2.7s teaser is under the 3s brief",
+   "status": "PASS",
+   "note": "3.0s teaser, jumps 10s ahead",
    "clip": "LeBron #4",
    "position": 47,
    "label": "LBR 4"
@@ -497,15 +497,15 @@
    "label": "PRI 1"
   },
   "pr4.mp4": {
-   "status": "SHORT",
-   "note": "1.7s teaser is under the 3s brief",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 6s ahead",
    "clip": "Prison #4",
    "position": 53,
    "label": "PRI 4"
   },
   "pr6.mp4": {
-   "status": "SHORT",
-   "note": "2.04s teaser is under the 3s brief",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 4s ahead",
    "clip": "Prison #6",
    "position": 55,
    "label": "PRI 6"
@@ -525,22 +525,22 @@
    "label": "PRI 8"
   },
   "pr2.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 7s ahead",
    "clip": "Prison #2",
    "position": 60,
    "label": "PRI 2"
   },
   "pr7.mp4": {
-   "status": "NO_TEASER",
-   "note": "spans chronological, no teaser prepended",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 22s ahead",
    "clip": "Prison #7",
    "position": 61,
    "label": "PRI 7"
   },
   "exp1.mp4": {
-   "status": "SHORT",
-   "note": "2.93s teaser is under the 3s brief",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 5s ahead",
    "clip": "Explosion #1",
    "position": 50,
    "label": "EXP 1"
