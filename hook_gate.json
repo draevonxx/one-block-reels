@@ -574,36 +574,36 @@
    "label": "EXP 4"
   },
   "gta1.mp4": {
-   "status": "NO_SIDECAR",
-   "note": "no source_map.json sidecar",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 20s ahead",
    "clip": "GTA #1",
    "position": 62,
    "label": "GTA 1"
   },
   "gta2.mp4": {
-   "status": "NO_SIDECAR",
-   "note": "no source_map.json sidecar",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 20s ahead",
    "clip": "GTA #2",
    "position": 63,
    "label": "GTA 2"
   },
   "gta3.mp4": {
-   "status": "NO_SIDECAR",
-   "note": "no source_map.json sidecar",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 4s ahead",
    "clip": "GTA #3",
    "position": 64,
    "label": "GTA 3"
   },
   "gta4.mp4": {
-   "status": "NO_SIDECAR",
-   "note": "no source_map.json sidecar",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 6s ahead",
    "clip": "GTA #4",
    "position": 65,
    "label": "GTA 4"
   },
   "gta5.mp4": {
-   "status": "NO_SIDECAR",
-   "note": "no source_map.json sidecar",
+   "status": "PASS",
+   "note": "5.0s teaser, jumps 15s ahead",
    "clip": "GTA #5",
    "position": 66,
    "label": "GTA 5"
