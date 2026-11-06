@@ -19,7 +19,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # This repo carries 123 mp4s, so a full checkout costs four minutes and this
+      # script reads four small files. Sparse checkout brings the run back to seconds.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            cr_submit.py
+            cr_yt_queue.json
+            cr_submitted.json
+            state_highlight.json
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
