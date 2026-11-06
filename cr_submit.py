@@ -81,8 +81,15 @@ STALE_AFTER_HOURS = 24
 # How long one run stays alive to catch slots, and how soon it looks again at a clip
 # that has aired but is not visible to us yet. Both sit under the job timeout, so a run
 # ends on its own terms having committed everything it filed.
-HORIZON_MINUTES = 90
-JOB_BUDGET_MINUTES = 100
+#
+# The horizon has to span a working evening, not just the next slot: GitHub starts a
+# scheduled run here about once every 45-70 min however, so a run that gives up on a
+# slot 4 hours out hands that slot to whichever tick happens to land nearest it - and
+# measured on Nov 6, that is how sv01 lost its Instagram filing to a hand push while
+# its YouTube one was caught by a tick. Sleeping is free on a public repo; a missed
+# 29-minute window is not.
+HORIZON_MINUTES = 300
+JOB_BUDGET_MINUTES = 310
 RETRY_SECONDS = 120
 
 # States in which the platform will not take the post again.

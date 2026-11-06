@@ -11,6 +11,11 @@ on:
   # The "run now" button for anyone who can commit but cannot reach the Actions page.
   # Committing cr_kick.json starts a run in seconds, which is what makes a window that
   # closes between two hourly wakes recoverable. Same code, same ledger, same dedupe.
+  #
+  # The publisher ledgers are deliberately NOT triggers here: publish.py and
+  # publish_highlight.py commit them with the job's own GITHUB_TOKEN, and GitHub does not
+  # start a workflow run for an event created by that token. Waking on the link is
+  # therefore done by staying alive (HORIZON_MINUTES), not by a push path.
   push:
     paths:
       - cr_kick.json
@@ -25,9 +30,10 @@ concurrency:
 jobs:
   submit:
     runs-on: ubuntu-latest
-    # The script waits up to 90 minutes for a slot to open (HORIZON_MINUTES), so the
-    # job has to outlive that. Public repo, Linux runner: the minutes cost nothing.
-    timeout-minutes: 110
+    # The script waits up to 300 minutes for a slot to open (HORIZON_MINUTES), so the
+    # job has to outlive that plus its own filing work. Public repo, Linux runner: the
+    # minutes cost nothing, a window that closed while nothing was awake costs the clip.
+    timeout-minutes: 330
     steps:
       # This repo carries 123 mp4s, so a full checkout costs four minutes and this
       # script reads four small files. Sparse checkout brings the run back to seconds.
