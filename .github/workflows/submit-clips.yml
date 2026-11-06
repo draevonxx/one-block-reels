@@ -1,0 +1,34 @@
+name: Submit campaign clips
+
+on:
+  schedule:
+    # A clip is only accepted for about 29 minutes after it goes public, and the
+    # reels land on the half hour, so a ten-minute tick gives each one three tries.
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cr-submit
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - run: python cr_submit.py
+        env:
+          CR_COOKIE: ${{ secrets.CR_COOKIE }}
+          # Repo variable, not a secret: flip CR_LIVE to "true" once the read-only
+          # runs have proved the session survives a datacenter IP. Until then this
+          # reports what it would submit and touches nothing.
+          CR_LIVE: ${{ vars.CR_LIVE }}
+          GITHUB_TOKEN: ${{ github.token }}

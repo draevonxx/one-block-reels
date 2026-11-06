@@ -1,0 +1,70 @@
+{
+ "generatedAt": "2026-11-06T08:20:42Z",
+ "note": "Written by tools/cr_make_queue.py on the laptop; the Actions submitter reads this for the YouTube lanes because the platform's own crawler is out of quota on these channels.",
+ "items": [
+  {
+   "campaign": "sega",
+   "campaignId": "8b79c473-d295-4901-8aee-e43c7ad03663",
+   "label": "sv01",
+   "videoId": "HrAUMdHKCRo",
+   "url": "https://www.youtube.com/watch?v=HrAUMdHKCRo",
+   "airAt": "2026-11-06T13:30:00Z"
+  },
+  {
+   "campaign": "manson",
+   "campaignId": "6bdc8e4b-3ebf-44f1-aedb-067589ca9c89",
+   "label": "MM 01",
+   "videoId": "DafwrlS2xyI",
+   "url": "https://www.youtube.com/watch?v=DafwrlS2xyI",
+   "airAt": "2026-11-06T19:00:00Z"
+  },
+  {
+   "campaign": "sega",
+   "campaignId": "8b79c473-d295-4901-8aee-e43c7ad03663",
+   "label": "sv02",
+   "videoId": "8kig9TRmfCc",
+   "url": "https://www.youtube.com/watch?v=8kig9TRmfCc",
+   "airAt": "2026-11-06T21:00:00Z"
+  },
+  {
+   "campaign": "sega",
+   "campaignId": "8b79c473-d295-4901-8aee-e43c7ad03663",
+   "label": "sv03",
+   "videoId": "kd-5u4bNAJo",
+   "url": "https://www.youtube.com/watch?v=kd-5u4bNAJo",
+   "airAt": "2026-11-07T13:30:00Z"
+  },
+  {
+   "campaign": "sega",
+   "campaignId": "8b79c473-d295-4901-8aee-e43c7ad03663",
+   "label": "sv04",
+   "videoId": "p2jqX_wpEq0",
+   "url": "https://www.youtube.com/watch?v=p2jqX_wpEq0",
+   "airAt": "2026-11-07T21:00:00Z"
+  },
+  {
+   "campaign": "manson",
+   "campaignId": "6bdc8e4b-3ebf-44f1-aedb-067589ca9c89",
+   "label": "MM 04",
+   "videoId": "JReikjKOjAM",
+   "url": "https://www.youtube.com/watch?v=JReikjKOjAM",
+   "airAt": "2026-11-08T00:00:00Z"
+  },
+  {
+   "campaign": "sega",
+   "campaignId": "8b79c473-d295-4901-8aee-e43c7ad03663",
+   "label": "sv05",
+   "videoId": "27lJ_aU1ncM",
+   "url": "https://www.youtube.com/watch?v=27lJ_aU1ncM",
+   "airAt": "2026-11-08T13:30:00Z"
+  },
+  {
+   "campaign": "manson",
+   "campaignId": "6bdc8e4b-3ebf-44f1-aedb-067589ca9c89",
+   "label": "MM 05",
+   "videoId": "2w8ZQpcqkRw",
+   "url": "https://www.youtube.com/watch?v=2w8ZQpcqkRw",
+   "airAt": "2026-11-08T19:00:00Z"
+  }
+ ]
+}
