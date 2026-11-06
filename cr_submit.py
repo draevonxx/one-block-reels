@@ -85,6 +85,12 @@ RETRY_SECONDS = 120
 # States in which the platform will not take the post again.
 DEAD = {"too_old", "submitted_here", "used_elsewhere", "expired", "rejected"}
 
+# The Instagram reel's own URL only exists once publish_highlight.py commits it, and the
+# publisher is on the same hourly clock, so the reel can appear up to an hour after its
+# planned minute. These bound how long a run keeps watching for one that is overdue.
+IG_INDEX_SECONDS = 240
+IG_WATCH_AFTER_HOURS = 3
+
 GIVE_UP = object()
 
 
@@ -106,6 +112,26 @@ def read_json(path, default):
         return json.loads(open(path, encoding="utf-8").read())
     except (OSError, ValueError):
         return default
+
+
+def live_state() -> dict:
+    """The Instagram links as they stand on the default branch right now.
+
+    The checkout is a snapshot taken the moment this run started, so a reel the
+    publisher posts while this run sleeps would never appear if we kept re-reading the
+    working copy. raw.githubusercontent needs no credential and cannot leak the cookie.
+    """
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    ref = os.environ.get("GITHUB_REF_NAME", "main")
+    if repo:
+        try:
+            r = requests.get(f"https://raw.githubusercontent.com/{repo}/{ref}/{IG_STATE}",
+                             timeout=30)
+            if r.status_code == 200:
+                return json.loads(r.text)
+        except (ValueError, requests.RequestException):
+            pass
+    return read_json(IG_STATE, {})
 
 
 class Session:
@@ -184,6 +210,30 @@ def ig_targets(state: dict, done: set[str], at: datetime):
     return out
 
 
+def ig_upcoming(queue: dict, state: dict, at: datetime):
+    """Campaign reels scheduled for today that the publisher has not recorded yet.
+
+    Instagram gives the runner nothing to work from until the link is committed, and the
+    publisher wakes on the same throttled hourly clock - so a reel planned for 13:30 can
+    post at 14:20. Without this the runner sees an empty inbox, exits, and the next run
+    starts after that reel's window has already shut.
+    """
+    links = state.get("links") or {}
+    out = []
+    for row in queue.get("igWatch") or []:
+        air = parse_at(row.get("airAt"))
+        label = row.get("label")
+        if air is None or not label or air.date() != at.date():
+            continue
+        if at - air > timedelta(hours=IG_WATCH_AFTER_HOURS):
+            continue
+        if any(k.endswith(f"|{label}") for k in links):
+            continue
+        out.append({"label": label, "campaign": row.get("campaign"),
+                    "openAt": air + timedelta(seconds=IG_INDEX_SECONDS)})
+    return out
+
+
 def yt_targets(queue: dict, done: set[str], at: datetime):
     """Split the queue into ready now, still waiting to open, and closed for good.
 
@@ -256,7 +306,7 @@ def pass_once(ses: Session, live: bool, work: dict, at: datetime):
     on, or GIVE_UP when the session is dead and no further pass can succeed.
     """
     rows, done = work["rows"], work["done"]
-    queue, state = read_json(YT_QUEUE, {}), read_json(IG_STATE, {})
+    queue, state = read_json(YT_QUEUE, {}), live_state()
     was_first = work["first"]
 
     # Always read one campaign, even when nothing looks due: this is what tells the
@@ -274,14 +324,19 @@ def pass_once(ses: Session, live: bool, work: dict, at: datetime):
 
     ig = ig_targets(state, done, at)
     yt, later, closed = yt_targets(queue, done, at)
+    due_ig = ig_upcoming(queue, state, at)
 
-    if not ig and not yt and not later and not closed:
+    if not ig and not yt and not later and not closed and not due_ig:
         if was_first:
             print(f"nothing due (ledger {len(rows)}, "
                   f"queue {len(queue.get('items') or [])} rows)")
         return None
 
     notes = [f"{t['label']} window closed - the platform will not take it now" for t in closed]
+    notes += [f"{t['label']} reel is not published/recorded yet (planned "
+              f"{t['openAt'] - timedelta(seconds=IG_INDEX_SECONDS):%H:%M} UTC) - watching"
+              for t in due_ig if t["label"] not in work["watched"]]
+    work["watched"].update(t["label"] for t in due_ig)
     retry = []
 
     for t in ig:
@@ -338,6 +393,7 @@ def pass_once(ses: Session, live: bool, work: dict, at: datetime):
     # that we could not see yet - never later than that row's own deadline, so a clip
     # whose window is about to shut gets a real last attempt instead of a missed one.
     wake = [t["openAt"] for t in later]
+    wake += [max(t["openAt"], at + timedelta(seconds=RETRY_SECONDS)) for t in due_ig]
     for t in retry:
         nxt = at + timedelta(seconds=RETRY_SECONDS)
         end = t.get("deadline")
@@ -360,7 +416,7 @@ def main() -> int:
     ses = Session(cookie)
     rows = read_json(LEDGER, [])
     work = {"rows": rows, "done": {r.get("postId") for r in rows if r.get("postId")},
-            "sent": 0, "first": True}
+            "sent": 0, "first": True, "watched": set()}
     start = now()
     budget = start + timedelta(minutes=min(JOB_BUDGET_MINUTES, HORIZON_MINUTES))
 
