@@ -46,9 +46,10 @@
     "2026-11-06|ESC 2",
     "2026-11-06|SUPO 15",
     "2026-11-06|SUPO 16",
-    "2026-11-06|GOLD 01"
+    "2026-11-06|GOLD 01",
+    "2026-11-06|sv02"
   ],
-  "last": "2026-11-06|GOLD 01",
+  "last": "2026-11-06|sv02",
   "media": {
     "2026-10-30|SUPO 01": "18135385603746838",
     "2026-10-30|DAY 6": "18132595240748424",
@@ -83,7 +84,8 @@
     "2026-11-06|ESC 2": "18003932654796803",
     "2026-11-06|SUPO 15": "18075488135750380",
     "2026-11-06|SUPO 16": "18125692307286788",
-    "2026-11-06|GOLD 01": "18109357016207689"
+    "2026-11-06|GOLD 01": "18109357016207689",
+    "2026-11-06|sv02": "18440400994177746"
   },
   "links": {
     "2026-11-06|SUPO 16": "https://www.instagram.com/reel/DfaJkgagWP5/",
@@ -112,11 +114,6 @@
     "2026-11-04|SKY 5": "https://www.instagram.com/reel/DfTzmUyjdqU/",
     "2026-11-04|SUPO 11": "https://www.instagram.com/reel/DfUc10zjZ1c/",
     "2026-11-04|COPS 4": "https://www.instagram.com/reel/DfUyMxFjpZs/",
-    "2026-11-04|SUPO 12": "https://www.instagram.com/reel/DfU-qw_jmoY/",
-    "2026-11-05|ESC 1": "https://www.instagram.com/reel/DfWb1zynJ-Y/",
-    "2026-11-05|SUPO 13": "https://www.instagram.com/reel/DfW_FZgiIsk/",
-    "2026-11-05|SUPO 14": "https://www.instagram.com/reel/DfXmsZqmd_n/",
-    "2026-11-05|COPS 5": "https://www.instagram.com/reel/DfX37l7lYn4/",
-    "2026-11-06|GTA 1": "https://www.instagram.com/reel/DfYpat9DktB/"
+    "2026-11-06|sv02": "https://www.instagram.com/reel/DfapQC7joMk/"
   }
 }
