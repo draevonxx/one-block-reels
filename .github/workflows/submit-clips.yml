@@ -8,6 +8,12 @@ on:
     # out the gap rather than relying on the next one.
     - cron: "*/10 * * * *"
   workflow_dispatch:
+  # The "run now" button for anyone who can commit but cannot reach the Actions page.
+  # Committing cr_kick.json starts a run in seconds, which is what makes a window that
+  # closes between two hourly wakes recoverable. Same code, same ledger, same dedupe.
+  push:
+    paths:
+      - cr_kick.json
 
 permissions:
   contents: write
