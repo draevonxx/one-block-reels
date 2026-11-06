@@ -40,6 +40,7 @@ jobs:
             cr_yt_queue.json
             cr_submitted.json
             state_highlight.json
+            state.json
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

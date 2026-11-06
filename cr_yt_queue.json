@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-06T13:48:01Z",
+ "generatedAt": "2026-11-06T17:03:20Z",
  "note": "Written by tools/cr_make_queue.py on the laptop. items are the YouTube clips the Actions submitter has to paste, because the platform's own crawler is out of quota on these channels. igWatch is only the planned Instagram air times: the runner cannot know a reel is coming until the publisher records it, and without this it exits rather than wait for a post that is minutes away.",
  "items": [
   {
@@ -92,7 +92,7 @@
   {
    "campaign": "sega",
    "label": "sv02",
-   "airAt": "2026-11-06T21:00:00Z"
+   "airAt": "2026-11-06T22:00:00Z"
   },
   {
    "campaign": "sega",

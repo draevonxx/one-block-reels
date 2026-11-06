@@ -75,7 +75,9 @@ FOMO = [
 # official logo burned in, because the brief requires it on every post.
 SEGA = [
     ("2026-11-06", "13:30", "sv01.mp4", "sv01"),
-    ("2026-11-06", "21:00", "sv02.mp4", "sv02"),
+    # sv02 was cut from this lane on 2026-11-06 and moved to publish.py's SV list
+    # (@draevonxx) instead of being duplicated here: the brief files "the same video
+    # on multiple accounts" under engagement fraud.
     ("2026-11-07", "13:30", "sv03.mp4", "sv03"),
     ("2026-11-07", "21:00", "sv04.mp4", "sv04"),
     ("2026-11-08", "13:30", "sv05.mp4", "sv05"),

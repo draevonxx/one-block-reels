@@ -200,9 +200,18 @@ GTA = [
     ("2026-11-10", "03:00", "gta5.mp4", "GTA 5"),
 ]
 
+# SEGA sv02, posted here instead of @scrollsociety.mp4 on 2026-11-06. The brief bans
+# "the same video on multiple accounts", so its row was removed from
+# publish_highlight.py rather than duplicated, and 22:00 keeps this lane's 3 h floor
+# behind GOLD 01 at 19:00. The caption key stays lowercase "sv02" on purpose: that is
+# the label cr_yt_queue.json's igWatch carries, and the submitter matches on it.
+SV = [
+    ("2026-11-06", "22:00", "sv02.mp4", "sv02"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
@@ -220,6 +229,41 @@ def cover_payload(repo: str, file_name: str) -> dict:
     if not os.path.exists(os.path.join("covers", f"{stem}.jpg")):
         return {}
     return {"cover_url": f"{COVER_BASE.format(repo=repo)}/{stem}.jpg"}
+
+
+def fetch_permalink(media_id: str) -> str:
+    """The public post URL, which is what a Content Rewards submission needs.
+
+    Never raises: a reel that already published must not lose its slot over a
+    lookup, and the next run backfills the link.
+    """
+    if not media_id:
+        return ""
+    try:
+        r = requests.get(
+            f"{GRAPH}/{media_id}",
+            params={"fields": "permalink", "access_token": TOKEN},
+            timeout=30,
+        )
+        return r.json().get("permalink", "")
+    except (requests.RequestException, ValueError) as exc:
+        print(f"  permalink lookup failed for {media_id}: {exc}")
+        return ""
+
+
+def backfill_links(state: dict) -> bool:
+    """Record links for reels published before this lane kept them."""
+    links = state.setdefault("links", {})
+    media = state.get("media", {})
+    missing = [k for k in state.get("published", []) if k not in links and media.get(k)]
+    added = 0
+    for key in missing[:6]:
+        link = fetch_permalink(media[key])
+        if link:
+            links[key] = link
+            added += 1
+            print(f"link backfilled {key}: {link}")
+    return bool(added)
 
 
 def load_state() -> dict:
@@ -242,7 +286,7 @@ def save_state(state: dict, repo: str) -> None:
     if existing.status_code == 200:
         sha = existing.json().get("sha")
     body = {
-        "message": f"state: publish {state['last']}",
+        "message": f"state: {state.get('last', 'links backfilled')}",
         "content": base64.b64encode(
             json.dumps(state, ensure_ascii=False, indent=2).encode()
         ).decode(),
@@ -264,6 +308,15 @@ def main() -> int:
     failures = 0
     state = load_state()
     repo = os.environ.get("GITHUB_REPOSITORY", "")
+    # Campaign reels posted on this page have to be submitted to Content Rewards
+    # within ~29 minutes of airing, which needs the permalink in the ledger. A
+    # failed lookup must never cost a slot, so the whole step is wrapped.
+    try:
+        if backfill_links(state):
+            save_state(state, repo)
+            state = load_state()
+    except Exception as exc:
+        print(f"link backfill skipped: {exc}")
     for entry in todays:
         file_name = entry["file"]
         day = entry["caption"]
@@ -364,6 +417,10 @@ def main() -> int:
         # The media id is what media_insights is read by; without it a reel's
         # performance is unrecoverable once the container id expires.
         state.setdefault("media", {})[state_key] = media_id
+        link = fetch_permalink(media_id)
+        if link:
+            state.setdefault("links", {})[state_key] = link
+        print(f"  link: {link or 'not yet resolved'}")
         state["published"].append(state_key)
         state["last"] = state_key
         save_state(state, repo)

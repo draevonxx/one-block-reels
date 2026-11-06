@@ -53,6 +53,9 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36")
 
 IG_STATE = "state_highlight.json"
+# The organic page carries campaign reels too now (the brief allows any page), so its
+# ledger is a second source of Instagram permalinks.
+IG_STATE_ORGANIC = "state.json"
 YT_QUEUE = "cr_yt_queue.json"
 LEDGER = "cr_submitted.json"
 
@@ -114,8 +117,8 @@ def read_json(path, default):
         return default
 
 
-def live_state() -> dict:
-    """The Instagram links as they stand on the default branch right now.
+def ledger_links(path: str) -> dict:
+    """One publisher's permalinks, as they stand on the default branch right now.
 
     The checkout is a snapshot taken the moment this run started, so a reel the
     publisher posts while this run sleeps would never appear if we kept re-reading the
@@ -125,13 +128,25 @@ def live_state() -> dict:
     ref = os.environ.get("GITHUB_REF_NAME", "main")
     if repo:
         try:
-            r = requests.get(f"https://raw.githubusercontent.com/{repo}/{ref}/{IG_STATE}",
+            r = requests.get(f"https://raw.githubusercontent.com/{repo}/{ref}/{path}",
                              timeout=30)
             if r.status_code == 200:
-                return json.loads(r.text)
+                return (json.loads(r.text) or {}).get("links") or {}
         except (ValueError, requests.RequestException):
             pass
-    return read_json(IG_STATE, {})
+    return (read_json(path, {}) or {}).get("links") or {}
+
+
+def live_state() -> dict:
+    """Both publishers' links in one map keyed "date|label".
+
+    Campaign reels now air on two Instagram pages, and only the label decides which
+    campaign each one belongs to, so a reel recorded by the organic publisher is as
+    submittable as one recorded by the campaign page.
+    """
+    links = ledger_links(IG_STATE)
+    links.update(ledger_links(IG_STATE_ORGANIC))
+    return {"links": links}
 
 
 class Session:
