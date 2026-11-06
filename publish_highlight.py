@@ -63,19 +63,21 @@ FOMO = [
     ("2026-11-05", "13:30", "fo07.mp4", "FO 07"),
 ]
 
-# ClipFarm x SEGA Virtua Fighter Crossroads (Lionel Rafale trailer). Two per day
-# at 13:30 and 16:00 UTC, inside the waking window, starting once the Manson and
-# FOMO slates clear on Nov 5. 13:30 hits the US morning and 16:00 the US late
-# morning - both still aimed at the 35% combined USA+Canada audience rule, which
-# is the constraint that matters, though neither is the US prime-time slot.
+# ClipFarm x SEGA Virtua Fighter Crossroads (Lionel Rafale trailer). Two per day,
+# 13:30 and 21:00 UTC, starting once the Manson and FOMO slates clear on Nov 5.
+# 13:30 hits the US morning and the UK lunchtime; 21:00 is the one hour where all
+# four Tier 1 regions are awake at once (US East mid-afternoon, US West lunch, UK
+# 21:00 prime, Australia 07:00-08:00 commute), which is the slot that carries the
+# 35% combined USA+Canada audience rule. Cost, accepted: 21:00 UTC is 02:30 IST,
+# so those reels air while the operator is asleep and get submitted on waking.
 # Each sv caption is the verbatim brief caption - tools/build_sega_caption.py
 # writes them from the .docx so none of it is retyped - and each file carries the
 # official logo burned in, because the brief requires it on every post.
 SEGA = [
     ("2026-11-06", "13:30", "sv01.mp4", "sv01"),
-    ("2026-11-06", "16:00", "sv02.mp4", "sv02"),
+    ("2026-11-06", "21:00", "sv02.mp4", "sv02"),
     ("2026-11-07", "13:30", "sv03.mp4", "sv03"),
-    ("2026-11-07", "16:00", "sv04.mp4", "sv04"),
+    ("2026-11-07", "21:00", "sv04.mp4", "sv04"),
     ("2026-11-08", "13:30", "sv05.mp4", "sv05"),
 ]
 
