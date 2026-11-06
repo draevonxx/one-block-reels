@@ -231,7 +231,8 @@ def main() -> int:
         print(f"AUTH FAILED ({code}) - CR_COOKIE no longer works; re-export it.")
         return 0
     lists = {CAMPAIGNS["fomo"]: {v.get("postId"): v for v in vids}}
-    print(f"session ok from this IP at {at:%H:%M} UTC; {len(vids)} posts listed for fomo")
+    print(f"session ok from this IP at {at:%H:%M} UTC; {len(vids)} posts listed for fomo; "
+          f"mode={'LIVE, will submit' if live else 'read-only, reports only'}")
 
     if not ig and not yt:
         print(f"nothing due (ledger {len(rows)}, queue {len(queue.get('items') or [])} rows)")
