@@ -24,6 +24,17 @@ cannot repeat a submission. Auth is the CR_COOKIE secret: a browser session expo
 once, which expires on Whop's own clock. When it does, this prints one line and stops
 rather than retrying.
 
+Why a run waits instead of exiting. GitHub starts a scheduled run on this repo about
+once an hour, not once every ten minutes - the cron is committed and real, but the
+scheduler is throttled here (measured 2026-11-06 across this repo's three scheduled
+workflows: ~25 runs a day each, and no two runs closer together than 32 minutes). A
+29-minute window cannot be caught by hoping a run happens to start inside it. So a run
+that can see a clip about to air stays alive, sleeps until the window opens, submits
+then, and re-checks a clip that has aired but is not yet public or not yet indexed. The
+ledger is committed after each accepted submission rather than once at the end, because
+a run killed by the job timeout mid-sleep must not leave an unrecorded submission for
+the next runner to repeat - YouTube has no platform-side dedupe.
+
 Env: CR_COOKIE (required)  CR_LIVE  "true" to actually POST, anything else to report
 """
 from __future__ import annotations
@@ -32,6 +43,7 @@ import base64
 import json
 import os
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 
 import requests
@@ -63,8 +75,17 @@ PUBLIC_PAD_SECONDS = 180
 # that is about to air; stop chasing it so the report stays honest.
 STALE_AFTER_HOURS = 24
 
+# How long one run stays alive to catch slots, and how soon it looks again at a clip
+# that has aired but is not visible to us yet. Both sit under the job timeout, so a run
+# ends on its own terms having committed everything it filed.
+HORIZON_MINUTES = 90
+JOB_BUDGET_MINUTES = 100
+RETRY_SECONDS = 120
+
 # States in which the platform will not take the post again.
 DEAD = {"too_old", "submitted_here", "used_elsewhere", "expired", "rejected"}
+
+GIVE_UP = object()
 
 
 def now() -> datetime:
@@ -118,7 +139,7 @@ class Session:
 def is_public(video_id: str, log) -> bool:
     """oEmbed answers 200 only for a video that exists and is viewable.
 
-    404 is private or deleted, so we hold off and try again next run; 401 is the
+    404 is private or deleted, so we hold off and look again shortly; 401 is the
     embedding-disabled case, which is ambiguous enough that it gets reported instead
     of guessed at, because guessing wrong here can cost the clip.
     """
@@ -159,31 +180,54 @@ def ig_targets(state: dict, done: set[str], at: datetime):
         if aired.date() < at.date():
             continue
         out.append({"kind": "instagram", "campaign": campaign, "label": label,
-                    "postId": code, "url": url})
+                    "campaignId": CAMPAIGNS[campaign], "postId": code, "url": url})
     return out
 
 
 def yt_targets(queue: dict, done: set[str], at: datetime):
-    out, unknown = [], []
+    """Split the queue into ready now, still waiting to open, and closed for good.
+
+    Ready and pending rows carry openAt (the first moment the clip can be proved
+    public) and deadline (the last second the platform will take it). Those two are what
+    let the caller sleep to an opening instead of waiting for some later run to find it.
+    """
+    ready, pending, closed, unknown = [], [], [], []
     for row in queue.get("items") or []:
         vid = row.get("videoId")
         if not vid or vid in done:
             continue
         air = parse_at(row.get("airAt"))
-        if air is None or air + timedelta(seconds=PUBLIC_PAD_SECONDS) > at:
-            continue
-        if at - air > timedelta(hours=STALE_AFTER_HOURS):
+        if air is None:
             continue
         campaign = row.get("campaign")
         if campaign not in CAMPAIGNS:
             unknown.append(f"{row.get('label')}: unknown campaign {campaign}")
             continue
-        out.append({"kind": "youtube", "campaign": campaign,
-                    "campaignId": CAMPAIGNS[campaign], "label": row.get("label"),
-                    "postId": vid, "url": row.get("url")})
+        t = {"kind": "youtube", "campaign": campaign, "campaignId": CAMPAIGNS[campaign],
+             "label": row.get("label"), "postId": vid, "url": row["url"],
+             "openAt": air + timedelta(seconds=PUBLIC_PAD_SECONDS),
+             "deadline": air + timedelta(minutes=MAX_AGE_MINUTES)
+                         - timedelta(seconds=MARGIN_SECONDS)}
+        if t["deadline"] <= at:
+            if at - air <= timedelta(hours=STALE_AFTER_HOURS):
+                closed.append(t)
+            continue
+        (pending if t["openAt"] > at else ready).append(t)
     for u in unknown:
         print("  -", u)
-    return out
+    return ready, pending, closed
+
+
+def record(work: dict, t: dict, at: datetime, published_at=None) -> None:
+    """Fold one accepted submission into the in-memory ledger and say so."""
+    work["rows"].append({
+        "campaign": t["campaign"], "campaignId": t["campaignId"], "postId": t["postId"],
+        "platform": t["kind"], "url": t["url"], "publishedAt": published_at,
+        "submittedAt": at.isoformat(timespec="seconds").replace("+00:00", "Z"),
+    })
+    work["done"].add(t["postId"])
+    work["sent"] += 1
+    print(f"SUBMITTED {t['campaign']}/{t['label']} {t['kind']} {t['url']}", flush=True)
 
 
 def commit(path: str, obj, message: str) -> None:
@@ -205,23 +249,15 @@ def commit(path: str, obj, message: str) -> None:
     print("ledger commit:", requests.put(api, headers=headers, json=body, timeout=30).status_code)
 
 
-def main() -> int:
-    cookie = os.environ.get("CR_COOKIE", "").strip()
-    if not cookie:
-        # Not a failure: the workflow is scheduled before the secret exists, and a
-        # non-zero exit would mail the owner every ten minutes.
-        print("CR_COOKIE is not set; nothing submitted.")
-        return 0
+def pass_once(ses: Session, live: bool, work: dict, at: datetime):
+    """Evaluate both lanes at clock time `at`.
 
-    live = os.environ.get("CR_LIVE", "").strip().lower() == "true"
-    at = now()
-    ses = Session(cookie)
-    rows = read_json(LEDGER, [])
-    done = {r.get("postId") for r in rows if r.get("postId")}
-    queue = read_json(YT_QUEUE, {})
-    state = read_json(IG_STATE, {})
-
-    ig, yt = ig_targets(state, done, at), yt_targets(queue, done, at)
+    Returns the next instant worth waking for, None when there is nothing left to wait
+    on, or GIVE_UP when the session is dead and no further pass can succeed.
+    """
+    rows, done = work["rows"], work["done"]
+    queue, state = read_json(YT_QUEUE, {}), read_json(IG_STATE, {})
+    was_first = work["first"]
 
     # Always read one campaign, even when nothing looks due: this is what tells the
     # owner the exported session still works from this IP. Without it, a quiet day and
@@ -229,72 +265,121 @@ def main() -> int:
     vids, code = ses.candidates(CAMPAIGNS["fomo"])
     if vids is None:
         print(f"AUTH FAILED ({code}) - CR_COOKIE no longer works; re-export it.")
-        return 0
+        return GIVE_UP
     lists = {CAMPAIGNS["fomo"]: {v.get("postId"): v for v in vids}}
-    print(f"session ok from this IP at {at:%H:%M} UTC; {len(vids)} posts listed for fomo; "
-          f"mode={'LIVE, will submit' if live else 'read-only, reports only'}")
+    if was_first:
+        work["first"] = False
+        print(f"session ok from this IP at {at:%H:%M} UTC; {len(vids)} posts listed for fomo; "
+              f"mode={'LIVE, will submit' if live else 'read-only, reports only'}", flush=True)
 
-    if not ig and not yt:
-        print(f"nothing due (ledger {len(rows)}, queue {len(queue.get('items') or [])} rows)")
-        return 0
+    ig = ig_targets(state, done, at)
+    yt, later, closed = yt_targets(queue, done, at)
 
-    notes, sent = [], 0
+    if not ig and not yt and not later and not closed:
+        if was_first:
+            print(f"nothing due (ledger {len(rows)}, "
+                  f"queue {len(queue.get('items') or [])} rows)")
+        return None
+
+    notes = [f"{t['label']} window closed - the platform will not take it now" for t in closed]
+    retry = []
+
     for t in ig:
-        cid = CAMPAIGNS[t["campaign"]]
+        cid = t["campaignId"]
         if cid not in lists:
             vids, code = ses.candidates(cid)
             if vids is None:
                 print(f"AUTH FAILED reading candidates for {t['campaign']} ({code}); "
                       "re-export the cookie.")
-                return 0
+                return GIVE_UP
             lists[cid] = {v.get("postId"): v for v in vids}
         v = lists[cid].get(t["postId"])
         if v is None:
-            notes.append(f"{t['label']} not indexed yet")
+            notes.append(f"{t['label']} not indexed by the platform yet")
+            retry.append(t)
             continue
         submit_by = parse_at(v.get("submitBy"))
         if v.get("state") in DEAD or not submit_by or submit_by <= at:
             notes.append(f"{t['label']} closed ({v.get('state')})")
             continue
-        t["campaignId"] = cid
         if not live:
             notes.append(f"[dry] would submit {t['campaign']}/{t['label']}")
             continue
         status, reply = ses.submit(cid, t["url"])
         if status in (200, 201):
-            sent += 1
-            rows.append({"campaign": t["campaign"], "campaignId": cid, "postId": t["postId"],
-                         "platform": "instagram", "url": t["url"],
-                         "publishedAt": v.get("publishedAt"),
-                         "submittedAt": at.isoformat(timespec="seconds").replace("+00:00", "Z")})
-            done.add(t["postId"])
-            print(f"SUBMITTED {t['campaign']}/{t['label']} ig {t['url']}")
+            record(work, t, at, published_at=v.get("publishedAt"))
+            commit(LEDGER, rows, f"cr: {t['campaign']}/{t['label']}")
         else:
             notes.append(f"{t['label']} refused {status} {reply[:90]}")
 
     for t in yt:
         if not is_public(t["postId"], notes):
-            notes.append(f"{t['label']} not public yet")
+            notes.append(f"{t['label']} aired but not public yet")
+            retry.append(t)
             continue
         if not live:
             notes.append(f"[dry] would submit {t['campaign']}/{t['label']} yt")
             continue
         status, reply = ses.submit(t["campaignId"], t["url"])
         if status in (200, 201):
-            sent += 1
-            rows.append({"campaign": t["campaign"], "campaignId": t["campaignId"],
-                         "postId": t["postId"], "platform": "youtube", "url": t["url"],
-                         "submittedAt": at.isoformat(timespec="seconds").replace("+00:00", "Z")})
-            print(f"SUBMITTED {t['campaign']}/{t['label']} yt {t['url']}")
+            record(work, t, at)
+            commit(LEDGER, rows, f"cr: {t['campaign']}/{t['label']}")
         else:
             notes.append(f"{t['label']} refused {status} {reply[:90]}")
 
     for n in notes:
-        print("  -", n)
-    if sent and live:
-        commit(LEDGER, rows, f"cr: {sent} submission(s)")
-    elif not live:
-        print(f"dry run: {len(ig)} instagram + {len(yt)} youtube candidate(s)")
+        print("  -", n, flush=True)
+    if not live:
+        print(f"dry run: {len(ig)} instagram + {len(yt)} youtube candidate(s), "
+              f"{len(later)} waiting to open")
+        return None
+
+    # Wake for the next slot that has not opened, and sooner for anything just tried
+    # that we could not see yet - never later than that row's own deadline, so a clip
+    # whose window is about to shut gets a real last attempt instead of a missed one.
+    wake = [t["openAt"] for t in later]
+    for t in retry:
+        nxt = at + timedelta(seconds=RETRY_SECONDS)
+        end = t.get("deadline")
+        if end is not None:
+            nxt = min(nxt, end - timedelta(seconds=15))
+        wake.append(nxt)
+    wake = [w for w in wake if w > at]
+    return min(wake) if wake else None
+
+
+def main() -> int:
+    cookie = os.environ.get("CR_COOKIE", "").strip()
+    if not cookie:
+        # Not a failure: the workflow is scheduled before the secret exists, and a
+        # non-zero exit would mail the owner every run.
+        print("CR_COOKIE is not set; nothing submitted.")
+        return 0
+
+    live = os.environ.get("CR_LIVE", "").strip().lower() == "true"
+    ses = Session(cookie)
+    rows = read_json(LEDGER, [])
+    work = {"rows": rows, "done": {r.get("postId") for r in rows if r.get("postId")},
+            "sent": 0, "first": True}
+    start = now()
+    budget = start + timedelta(minutes=min(JOB_BUDGET_MINUTES, HORIZON_MINUTES))
+
+    while True:
+        nxt = pass_once(ses, live, work, now())
+        if nxt is GIVE_UP or nxt is None:
+            break
+        if nxt > budget:
+            print(f"next opening is {nxt:%H:%M} UTC, past this run's {HORIZON_MINUTES} min "
+                  "budget; leaving it to the next scheduled run")
+            break
+        wait = (nxt - now()).total_seconds()
+        if wait <= 0:
+            continue
+        print(f"staying alive {int(wait)}s until {nxt:%H:%M} UTC "
+              f"({(nxt - start).total_seconds() / 60:.0f} min into this run)", flush=True)
+        time.sleep(wait)
+
+    print(f"done: {work['sent']} submitted, ledger {len(rows)} rows at {now():%H:%M} UTC")
     return 0
 
 

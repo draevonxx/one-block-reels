@@ -2,8 +2,10 @@ name: Submit campaign clips
 
 on:
   schedule:
-    # A clip is only accepted for about 29 minutes after it goes public, and the
-    # reels land on the half hour, so a ten-minute tick gives each one three tries.
+    # A clip is only accepted for about 29 minutes after it goes public. GitHub only
+    # actually starts a run here about once an hour however, so the tick is only there
+    # to raise the odds that some run is alive before each slot - cr_submit.py waits
+    # out the gap rather than relying on the next one.
     - cron: "*/10 * * * *"
   workflow_dispatch:
 
@@ -17,7 +19,9 @@ concurrency:
 jobs:
   submit:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    # The script waits up to 90 minutes for a slot to open (HORIZON_MINUTES), so the
+    # job has to outlive that. Public repo, Linux runner: the minutes cost nothing.
+    timeout-minutes: 110
     steps:
       # This repo carries 123 mp4s, so a full checkout costs four minutes and this
       # script reads four small files. Sparse checkout brings the run back to seconds.
