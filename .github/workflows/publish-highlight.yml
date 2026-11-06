@@ -25,9 +25,30 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Same budget problem as publish.yml: the poll loop alone can run 15 min on a
+    # 28 MB reel, and a run killed at the deadline loses the slot mid-publish.
+    timeout-minutes: 40
     steps:
+      # The clips are fetched by Instagram over raw.githubusercontent.com, so the
+      # 3 GB of mp4s in this repo is only checkout latency (measured 4-6 min per
+      # run). covers-highlight/ stays: os.path.exists() on it is what decides
+      # whether a reel gets its committed cover.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            publish_highlight.py
+            captions_highlight.json
+            state_highlight.json
+            covers-highlight/
+      # A missing state_highlight.json is not a crash, it is a page that forgets
+      # what it already posted and publishes duplicates. Refuse to run instead.
+      - name: Check out every file publish_highlight.py needs
+        run: |
+          for f in publish_highlight.py captions_highlight.json state_highlight.json; do
+            test -f "$f" || { echo "sparse checkout is missing $f"; exit 1; }
+          done
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

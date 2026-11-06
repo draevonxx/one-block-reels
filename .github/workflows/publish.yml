@@ -22,9 +22,34 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # A 28 MB reel can sit IN_PROGRESS on Instagram for the full poll loop
+    # (60 x 15 s = 15 min) on top of setup, and a run killed at the deadline loses
+    # the slot mid-publish. The minutes are free on a public repo.
+    timeout-minutes: 40
     steps:
+      # publish.py never reads a clip from disk - Instagram fetches it from
+      # raw.githubusercontent.com - so the 3 GB of mp4s in this repo is pure
+      # checkout latency: measured 4-6 min of every run. Sparse checkout brings
+      # it back to seconds. covers/ must stay in the list, because the only
+      # thing that decides whether a reel gets its committed cover art is
+      # os.path.exists("covers/<stem>.jpg").
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            publish.py
+            captions.json
+            hook_gate.json
+            state.json
+            covers/
+      # A missing state.json is not a crash, it is a page that forgets what it
+      # already posted and publishes duplicates. Refuse to run instead.
+      - name: Check out every file publish.py needs
+        run: |
+          for f in publish.py captions.json state.json; do
+            test -f "$f" || { echo "sparse checkout is missing $f"; exit 1; }
+          done
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

@@ -15,7 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # A full checkout of this repo measures 6 min, which is over this job's whole
+      # budget, so most ticks were being cancelled before python started and the
+      # alarm only fired on the lucky warm-cache runs. The watchdog reads two files.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            watch_highlight.py
+            publish_highlight.py
+            state_highlight.json
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
