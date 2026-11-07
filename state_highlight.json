@@ -13,7 +13,8 @@
     "2026-11-05|MM 05",
     "2026-11-05|FO 07",
     "2026-11-06|sv01",
-    "2026-11-07|sv03"
+    "2026-11-07|sv03",
+    "2026-11-07|sv04"
   ],
   "media": {
     "2026-11-01|MM 01": "18397488439162753",
@@ -29,9 +30,10 @@
     "2026-11-05|MM 05": "18208159264335723",
     "2026-11-05|FO 07": "17944864419363182",
     "2026-11-06|sv01": "18060971510799584",
-    "2026-11-07|sv03": "18111055487247042"
+    "2026-11-07|sv03": "18111055487247042",
+    "2026-11-07|sv04": "18015158519975740"
   },
-  "last": "2026-11-07|sv03",
+  "last": "2026-11-07|sv04",
   "links": {
     "2026-11-01|MM 01": "https://www.instagram.com/reel/DfNQ0uBEZfE/",
     "2026-11-02|FO 01": "https://www.instagram.com/reel/DfPYcRQDVF8/",
@@ -46,6 +48,7 @@
     "2026-11-05|MM 05": "https://www.instagram.com/reel/DfW86bVjmSf/",
     "2026-11-05|FO 07": "https://www.instagram.com/reel/DfXMbbRlSmW/",
     "2026-11-06|sv01": "https://www.instagram.com/reel/DfZv9RAFGeS/",
-    "2026-11-07|sv03": "https://www.instagram.com/reel/DfcULKOFAOP/"
+    "2026-11-07|sv03": "https://www.instagram.com/reel/DfcULKOFAOP/",
+    "2026-11-07|sv04": "https://www.instagram.com/reel/DfdJqo-DErl/"
   }
 }
