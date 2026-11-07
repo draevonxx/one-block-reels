@@ -442,9 +442,16 @@ def main() -> int:
     start = now()
     budget = start + timedelta(minutes=min(JOB_BUDGET_MINUTES, HORIZON_MINUTES))
 
+    died = False
     while True:
         nxt = pass_once(ses, live, work, now())
-        if nxt is GIVE_UP or nxt is None:
+        if nxt is GIVE_UP:
+            # A dead session is not a quiet run: from here every remaining slot is
+            # unfillable, and it stayed invisible for three hours on Nov 7 because
+            # this broke out of the loop and still returned zero.
+            died = True
+            break
+        if nxt is None:
             break
         if nxt > budget:
             print(f"next opening is {nxt:%H:%M} UTC, past this run's {HORIZON_MINUTES} min "
@@ -458,7 +465,7 @@ def main() -> int:
         time.sleep(wait)
 
     print(f"done: {work['sent']} submitted, ledger {len(rows)} rows at {now():%H:%M} UTC")
-    return 0
+    return 1 if died else 0
 
 
 if __name__ == "__main__":
