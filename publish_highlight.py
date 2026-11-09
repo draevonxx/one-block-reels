@@ -98,9 +98,32 @@ COD = [
     ("2026-11-13", "13:30", "cod5.mp4", "cod5"),
 ]
 
+# Call of Duty Warzone Season 1 trailer clipping. Instagram only: the campaign's own
+# platforms list is ["instagram","tiktok"], so there is no YouTube surface to pay out on
+# and no queue row for it in cr_yt_queue.json. One per day at 15:30 UTC = 21:00 IST,
+# which is 2h clear of the 13:30 COD rows above and still inside the 10:30-16:30 UTC
+# waking window with an hour to spare - the publisher is on an hourly clock, so a slot
+# right at the edge of the window would air after the operator has gone.
+# Cut from a different source file than the COD lane (the Warzone trailer, not the MW4
+# one, and no sampled frame of either matches any frame of the other), so the two lanes
+# are not posting the same footage to the same account.
+# The brief bans explicit content, so every window here was chosen off a per-frame
+# red-share scan of the trailer and excludes all six measured blood bursts, and the
+# picture is the competitors' own 4:3 punch-in inside 9:16 rather than a full-bleed
+# reframe - which is also why the crop was checked frame by frame: a 4:3 window throws
+# away 480px at each edge, and the trailer's own "ALL OUT WARZONE" card came out of it
+# reading "VARZONE".
+WZ = [
+    ("2026-11-09", "15:30", "wz1.mp4", "wz1"),
+    ("2026-11-10", "15:30", "wz2.mp4", "wz2"),
+    ("2026-11-11", "15:30", "wz3.mp4", "wz3"),
+    ("2026-11-12", "15:30", "wz4.mp4", "wz4"),
+    ("2026-11-13", "15:30", "wz5.mp4", "wz5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD)
+    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ)
 ]
 
 CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))

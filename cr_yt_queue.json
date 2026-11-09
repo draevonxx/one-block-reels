@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-06T17:03:20Z",
- "note": "Written by tools/cr_make_queue.py on the laptop. items are the YouTube clips the Actions submitter has to paste, because the platform's own crawler is out of quota on these channels. igWatch is only the planned Instagram air times: the runner cannot know a reel is coming until the publisher records it, and without this it exits rather than wait for a post that is minutes away.",
+ "generatedAt": "2026-11-09T11:16:25Z",
+ "note": "Written by tools/cr_make_queue.py on the laptop. items are the YouTube clips the Actions submitter has to paste, because the platform's own crawler is out of quota on these channels. igWatch is only the planned Instagram air times: the runner cannot know a reel is coming until the publisher records it, and without this it exits rather than wait for a post that is minutes away. Every row is derived - the YouTube lanes from their schedule files, the Instagram-only lanes straight out of publish_highlight.py - so arming a lane is one commit, not two.",
  "items": [
   {
    "campaign": "sega",
@@ -81,6 +81,62 @@
    "videoId": "2w8ZQpcqkRw",
    "url": "https://www.youtube.com/watch?v=2w8ZQpcqkRw",
    "airAt": "2026-11-08T19:00:00Z"
+  },
+  {
+   "campaign": "fomo",
+   "campaignId": "2fb7df23-c446-4aa0-a8db-228015f782f8",
+   "label": "FO B2",
+   "videoId": "mTILidf5Vao",
+   "url": "https://www.youtube.com/watch?v=mTILidf5Vao",
+   "airAt": "2026-11-09T13:30:00Z"
+  },
+  {
+   "campaign": "fomo",
+   "campaignId": "2fb7df23-c446-4aa0-a8db-228015f782f8",
+   "label": "FO B1",
+   "videoId": "fOFWtw2HDk8",
+   "url": "https://www.youtube.com/watch?v=fOFWtw2HDk8",
+   "airAt": "2026-11-09T21:00:00Z"
+  },
+  {
+   "campaign": "fomo",
+   "campaignId": "2fb7df23-c446-4aa0-a8db-228015f782f8",
+   "label": "FO C1",
+   "videoId": "oiFoEijvhzo",
+   "url": "https://www.youtube.com/watch?v=oiFoEijvhzo",
+   "airAt": "2026-11-10T13:30:00Z"
+  },
+  {
+   "campaign": "fomo",
+   "campaignId": "2fb7df23-c446-4aa0-a8db-228015f782f8",
+   "label": "FO B4",
+   "videoId": "V0tGWmSD5k8",
+   "url": "https://www.youtube.com/watch?v=V0tGWmSD5k8",
+   "airAt": "2026-11-10T21:00:00Z"
+  },
+  {
+   "campaign": "fomo",
+   "campaignId": "2fb7df23-c446-4aa0-a8db-228015f782f8",
+   "label": "FO B5",
+   "videoId": "BLA7S7lWh4c",
+   "url": "https://www.youtube.com/watch?v=BLA7S7lWh4c",
+   "airAt": "2026-11-11T13:30:00Z"
+  },
+  {
+   "campaign": "fomo",
+   "campaignId": "2fb7df23-c446-4aa0-a8db-228015f782f8",
+   "label": "FO B3",
+   "videoId": "PkBLX30UL6U",
+   "url": "https://www.youtube.com/watch?v=PkBLX30UL6U",
+   "airAt": "2026-11-11T21:00:00Z"
+  },
+  {
+   "campaign": "fomo",
+   "campaignId": "2fb7df23-c446-4aa0-a8db-228015f782f8",
+   "label": "FO C2",
+   "videoId": "U5Z0NLamYaI",
+   "url": "https://www.youtube.com/watch?v=U5Z0NLamYaI",
+   "airAt": "2026-11-12T21:00:00Z"
   }
  ],
  "igWatch": [
@@ -108,6 +164,56 @@
    "campaign": "sega",
    "label": "sv05",
    "airAt": "2026-11-08T13:30:00Z"
+  },
+  {
+   "campaign": "cod",
+   "label": "cod1",
+   "airAt": "2026-11-09T13:30:00Z"
+  },
+  {
+   "campaign": "wz",
+   "label": "wz1",
+   "airAt": "2026-11-09T15:30:00Z"
+  },
+  {
+   "campaign": "cod",
+   "label": "cod2",
+   "airAt": "2026-11-10T13:30:00Z"
+  },
+  {
+   "campaign": "wz",
+   "label": "wz2",
+   "airAt": "2026-11-10T15:30:00Z"
+  },
+  {
+   "campaign": "cod",
+   "label": "cod3",
+   "airAt": "2026-11-11T13:30:00Z"
+  },
+  {
+   "campaign": "wz",
+   "label": "wz3",
+   "airAt": "2026-11-11T15:30:00Z"
+  },
+  {
+   "campaign": "cod",
+   "label": "cod4",
+   "airAt": "2026-11-12T13:30:00Z"
+  },
+  {
+   "campaign": "wz",
+   "label": "wz4",
+   "airAt": "2026-11-12T15:30:00Z"
+  },
+  {
+   "campaign": "cod",
+   "label": "cod5",
+   "airAt": "2026-11-13T13:30:00Z"
+  },
+  {
+   "campaign": "wz",
+   "label": "wz5",
+   "airAt": "2026-11-13T15:30:00Z"
   }
  ]
 }
