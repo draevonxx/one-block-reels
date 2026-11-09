@@ -59,17 +59,19 @@ IG_STATE_ORGANIC = "state.json"
 YT_QUEUE = "cr_yt_queue.json"
 LEDGER = "cr_submitted.json"
 
-# Joined campaigns, read off /c/campaigns on 2026-11-06. A fourth campaign is joined
-# to this account ("$20,000 CORE Boys At Shibuya Crossing", Reach) and nothing here
-# maps to it, so it can never be filed to by accident.
+# Joined campaigns, read off /c/campaigns. The cod id is the one on the COD MW4
+# Season 1 campaign page, supplied 2026-11-09. Still joined and deliberately unmapped
+# is "$20,000 CORE Boys At Shibuya Crossing" (Reach, 432f45b8-ed16-4cc6-95d7-1655e6c7806a):
+# nothing here points at it, so no label can ever be filed to it by accident.
 CAMPAIGNS = {
     "sega": "8b79c473-d295-4901-8aee-e43c7ad03663",
     "manson": "6bdc8e4b-3ebf-44f1-aedb-067589ca9c89",
     "fomo": "2fb7df23-c446-4aa0-a8db-228015f782f8",
+    "cod": "78b4e379-2aa0-4d20-9fd0-ed02a816e3b1",
 }
 
 # Which campaign each reel prefix belongs to. The label is the only authority.
-IG_PREFIX = {"MM": "manson", "FO": "fomo", "sv": "sega"}
+IG_PREFIX = {"MM": "manson", "FO": "fomo", "sv": "sega", "cod": "cod"}
 
 MAX_AGE_MINUTES = 30
 MARGIN_SECONDS = 60
@@ -205,6 +207,8 @@ def campaign_of(label: str):
     head = label[:2].upper()
     if head in ("MM", "FO"):
         return IG_PREFIX[head]
+    if label[:3].lower() == "cod":
+        return IG_PREFIX["cod"]
     if label[:2].lower() == "sv":
         return IG_PREFIX["sv"]
     return None
