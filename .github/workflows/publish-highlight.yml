@@ -22,12 +22,22 @@ on:
 permissions:
   contents: write
 
+# Only one publisher alive at a time. cancel-in-progress false means a cron tick
+# that lands mid-run queues (GitHub keeps just the latest queued) instead of
+# killing a reel mid-publish; the queued run starts the moment the active one
+# finishes its budget, so coverage stays continuous.
+concurrency:
+  group: publish-highlight
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-    # Same budget problem as publish.yml: the poll loop alone can run 15 min on a
-    # 28 MB reel, and a run killed at the deadline loses the slot mid-publish.
-    timeout-minutes: 40
+    # The script stays alive up to HORIZON_MINUTES (300) sleeping to each slot, so
+    # the job must outlive that plus checkout and a publish poll. Public repo,
+    # Linux runner: the minutes cost nothing; a slot that airs late can blow its
+    # Content Rewards window.
+    timeout-minutes: 350
     steps:
       # The clips are fetched by Instagram over raw.githubusercontent.com, so the
       # 3 GB of mp4s in this repo is only checkout latency (measured 4-6 min per

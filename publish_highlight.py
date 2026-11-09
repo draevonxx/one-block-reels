@@ -1,6 +1,7 @@
 """Instagram reel publisher for @thehighlight_____ (GitHub Actions).
 
-Runs every 10 min; publishes each scheduled reel at its planned moment.
+A scheduled run stays alive and publishes each reel at its planned moment
+(GitHub throttles the */10 cron to about hourly, so a one-pass run airs late).
 
 Content: paid clipping campaigns from Content Rewards. One campaign clip per
 day during warm-up, never more than two per day after that.
@@ -244,6 +245,132 @@ def save_state(state: dict, repo: str) -> None:
     print("state commit:", r.status_code)
 
 
+# GitHub only starts a scheduled run here about once an hour however often the
+# cron ticks, so a one-pass script airs every slot late - and a late airing can
+# blow the Content Rewards window, which is counted from the scheduled moment.
+# Like cr_submit.py, the scheduled path stays alive and sleeps to each slot
+# instead of trusting the next wake. The horizon spans a working evening; the
+# workflow timeout outlives it.
+HORIZON_MINUTES = 300
+JOB_BUDGET_MINUTES = 320
+
+
+def slot_time(entry: dict) -> datetime:
+    return datetime.strptime(
+        f"{entry['date']} {entry['time']}", "%Y-%m-%d %H:%M"
+    ).replace(tzinfo=timezone.utc)
+
+
+def next_due(state: dict, at: datetime):
+    """Earliest still-unpublished slot after `at`, across the whole schedule."""
+    pub = set(state.get("published", []))
+    future = [slot_time(e) for e in SCHEDULE
+              if f"{e['date']}|{e['caption']}" not in pub and slot_time(e) > at]
+    return min(future) if future else None
+
+
+def publish_entry(entry: dict, state: dict, repo: str, now: datetime,
+                  force: bool = False) -> str:
+    """Publish one scheduled slot. Returns published/skip/not_yet/missed/failed/dryrun.
+
+    force (repost) bypasses the ledger and time guards: the reel was just taken
+    down and must go back up now regardless of its original slot.
+    """
+    file_name = entry["file"]
+    day = entry["caption"]
+    caption = CAPTIONS[day]
+    publish_at = slot_time(entry)
+    state_key = f"{entry['date']}|{day}"
+
+    if not force:
+        if state_key in state.get("published", []):
+            print(f"{day}: already published (state); skipping.")
+            return "skip"
+        if now < publish_at:
+            print(f"{day} due at {entry['time']} UTC (in {publish_at - now}); not yet.")
+            return "not_yet"
+        if now > publish_at + timedelta(hours=6):
+            print(f"{day} window missed (due {publish_at}). Use FORCE_DATE to rerun.")
+            return "missed"
+
+    video_url = f"{RAW_BASE.format(repo=repo)}/{file_name}"
+    print(f"{day}: publishing {file_name} (due {publish_at.isoformat()}, now {now.isoformat()})")
+    print(f"video_url: {video_url}")
+
+    r = requests.post(
+        f"{GRAPH}/{IG_USER_ID}/media",
+        data={
+            "media_type": "REELS",
+            "video_url": video_url,
+            "caption": caption,
+            "share_to_feed": "true",
+            "access_token": TOKEN,
+            **cover_payload(repo, file_name),
+        },
+        timeout=60,
+    )
+    print("container:", r.status_code, r.text[:300])
+    if r.status_code >= 400 and "cover_url" in r.text:
+        # A rejected cover must not cost us the slot; publish without it.
+        print("cover rejected; retrying container without cover_url")
+        r = requests.post(
+            f"{GRAPH}/{IG_USER_ID}/media",
+            data={
+                "media_type": "REELS",
+                "video_url": video_url,
+                "caption": caption,
+                "share_to_feed": "true",
+                "access_token": TOKEN,
+            },
+            timeout=60,
+        )
+        print("container:", r.status_code, r.text[:300])
+    r.raise_for_status()
+    creation_id = r.json()["id"]
+
+    if DRYRUN:
+        print(f"DRYRUN: container {creation_id} created; not publishing.")
+        return "dryrun"
+
+    for attempt in range(60):
+        time.sleep(15)
+        s = requests.get(
+            f"{GRAPH}/{creation_id}",
+            params={"fields": "status_code,status", "access_token": TOKEN},
+            timeout=30,
+        )
+        status = s.json().get("status_code", "")
+        print(f"  [{attempt}] status: {status}")
+        if status == "FINISHED":
+            break
+        if status == "EXPIRED":
+            print("Container expired; aborting this reel.")
+            return "failed"
+    else:
+        print("Processing timed out; the next run will retry.")
+        return "failed"
+
+    p = requests.post(
+        f"{GRAPH}/{IG_USER_ID}/media_publish",
+        data={"creation_id": creation_id, "access_token": TOKEN},
+        timeout=60,
+    )
+    print("publish:", p.status_code, p.text[:200])
+    p.raise_for_status()
+    media_id = p.json().get("id")
+    # The media id is what media_insights is read by; without it a reel's
+    # performance is unrecoverable once the container id expires.
+    state.setdefault("media", {})[state_key] = media_id
+    link = fetch_permalink(media_id)
+    if link:
+        state.setdefault("links", {})[state_key] = link
+    print(f"PUBLISHED {day}: media_id={media_id} link={link or 'not yet resolved'}")
+    state["published"].append(state_key)
+    state["last"] = state_key
+    save_state(state, repo)
+    return "published"
+
+
 def main() -> int:
     if not TOKEN or not IG_USER_ID:
         # Not a failure: this workflow is scheduled before its secrets exist,
@@ -259,12 +386,6 @@ def main() -> int:
         print(f"REPOST {REPOST}: pass the date that reel is scheduled for as well.")
         return 1
 
-    now = datetime.now(timezone.utc)
-    today = FORCE_DATE or now.strftime("%Y-%m-%d")
-    todays = [e for e in SCHEDULE if e["date"] == today]
-
-    failures = 0
-    replayed = 0
     state = load_state()
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     try:
@@ -275,122 +396,72 @@ def main() -> int:
         # that is due in the next few minutes.
         print(f"link backfill skipped: {exc}")
 
-    if not todays:
-        print(f"No reels scheduled for {today}; nothing to do.")
-        return 0
-    for entry in todays:
-        file_name = entry["file"]
-        day = entry["caption"]
-        caption = CAPTIONS[day]
-        publish_at = datetime.strptime(
-            f"{entry['date']} {entry['time']}", "%Y-%m-%d %H:%M"
-        ).replace(tzinfo=timezone.utc)
-
-        state_key = f"{entry['date']}|{day}"
-        if REPOST:
-            if day != REPOST:
-                continue
-            replayed += 1
-            old = state.get("media", {}).get(state_key, "")
-            print(f"REPOST {day}: taking down {old or 'nothing (no media id recorded)'}")
-            if old and not delete_media(old):
-                print("REPOST aborted: the live reel is still up, so nothing new goes out.")
-                return 1
-            state["published"] = [k for k in state.get("published", []) if k != state_key]
-            state.get("links", {}).pop(state_key, None)
-        else:
-            if state_key in state.get("published", []):
-                print(f"{day}: already published (state); skipping.")
-                continue
-            if now < publish_at:
-                print(f"{day} due at {entry['time']} UTC (in {publish_at - now}); not yet.")
-                continue
-            if now > publish_at + timedelta(hours=6):
-                print(f"{day} window missed (due {publish_at}). Use FORCE_DATE to rerun.")
+    # Manual dispatch (repost / force date / dry run) keeps the old single pass.
+    if REPOST or FORCE_DATE or DRYRUN:
+        now = datetime.now(timezone.utc)
+        today = FORCE_DATE or now.strftime("%Y-%m-%d")
+        todays = [e for e in SCHEDULE if e["date"] == today]
+        if not todays:
+            print(f"No reels scheduled for {today}; nothing to do.")
+            return 0
+        failures = 0
+        replayed = 0
+        for entry in todays:
+            day = entry["caption"]
+            state_key = f"{entry['date']}|{day}"
+            if REPOST:
+                if day != REPOST:
+                    continue
+                replayed += 1
+                old = state.get("media", {}).get(state_key, "")
+                print(f"REPOST {day}: taking down {old or 'nothing (no media id recorded)'}")
+                if old and not delete_media(old):
+                    print("REPOST aborted: the live reel is still up, so nothing new goes out.")
+                    return 1
+                state["published"] = [k for k in state.get("published", []) if k != state_key]
+                state.get("links", {}).pop(state_key, None)
+                res = publish_entry(entry, state, repo, datetime.now(timezone.utc), force=True)
+            else:
+                res = publish_entry(entry, state, repo, now)
+            if res in ("missed", "failed"):
                 failures += 1
-                continue
+        if REPOST and not replayed:
+            print(f"REPOST {REPOST!r} matched nothing on {today}; check the label and the date.")
+            return 1
+        return 1 if failures else 0
 
-        video_url = f"{RAW_BASE.format(repo=repo)}/{file_name}"
-        print(f"{day}: publishing {file_name} (due {publish_at.isoformat()}, now {now.isoformat()})")
-        print(f"video_url: {video_url}")
-
-        r = requests.post(
-            f"{GRAPH}/{IG_USER_ID}/media",
-            data={
-                "media_type": "REELS",
-                "video_url": video_url,
-                "caption": caption,
-                "share_to_feed": "true",
-                "access_token": TOKEN,
-                **cover_payload(repo, file_name),
-            },
-            timeout=60,
-        )
-        print("container:", r.status_code, r.text[:300])
-        if r.status_code >= 400 and "cover_url" in r.text:
-            # A rejected cover must not cost us the slot; publish without it.
-            print("cover rejected; retrying container without cover_url")
-            r = requests.post(
-                f"{GRAPH}/{IG_USER_ID}/media",
-                data={
-                    "media_type": "REELS",
-                    "video_url": video_url,
-                    "caption": caption,
-                    "share_to_feed": "true",
-                    "access_token": TOKEN,
-                },
-                timeout=60,
-            )
-            print("container:", r.status_code, r.text[:300])
-        r.raise_for_status()
-        creation_id = r.json()["id"]
-
-        if DRYRUN:
-            print(f"DRYRUN: container {creation_id} created; not publishing.")
-            continue
-
-        for attempt in range(60):
-            time.sleep(15)
-            s = requests.get(
-                f"{GRAPH}/{creation_id}",
-                params={"fields": "status_code,status", "access_token": TOKEN},
-                timeout=30,
-            )
-            status = s.json().get("status_code", "")
-            print(f"  [{attempt}] status: {status}")
-            if status == "FINISHED":
-                break
-            if status == "EXPIRED":
-                print("Container expired; aborting this reel.")
+    # Scheduled: stay alive and fire each slot on time rather than waiting for the
+    # next hourly wake, which airs everything late.
+    start = datetime.now(timezone.utc)
+    budget = start + timedelta(minutes=min(JOB_BUDGET_MINUTES, HORIZON_MINUTES))
+    failures = 0
+    missed_seen = set()
+    while True:
+        now = datetime.now(timezone.utc)
+        today = now.strftime("%Y-%m-%d")
+        for entry in [e for e in SCHEDULE if e["date"] == today]:
+            res = publish_entry(entry, state, repo, now)
+            if res == "failed":
                 failures += 1
-                break
-        else:
-            print("Processing timed out; the 10-min rerun will retry.")
-            failures += 1
+            elif res == "missed":
+                key = f"{entry['date']}|{entry['caption']}"
+                if key not in missed_seen:
+                    missed_seen.add(key)
+                    failures += 1
+        nxt = next_due(state, now)
+        if nxt is None:
+            print("no further scheduled slots; done.")
+            break
+        if nxt > budget:
+            print(f"next slot {nxt:%H:%M} UTC is past this run's {HORIZON_MINUTES} min "
+                  "budget; leaving it to the next scheduled run")
+            break
+        wait = (nxt - datetime.now(timezone.utc)).total_seconds()
+        if wait <= 0:
             continue
-
-        p = requests.post(
-            f"{GRAPH}/{IG_USER_ID}/media_publish",
-            data={"creation_id": creation_id, "access_token": TOKEN},
-            timeout=60,
-        )
-        print("publish:", p.status_code, p.text[:200])
-        p.raise_for_status()
-        media_id = p.json().get("id")
-        # The media id is what media_insights is read by; without it a reel's
-        # performance is unrecoverable once the container id expires.
-        state.setdefault("media", {})[state_key] = media_id
-        link = fetch_permalink(media_id)
-        if link:
-            state.setdefault("links", {})[state_key] = link
-        print(f"PUBLISHED {day}: media_id={media_id} link={link or 'not yet resolved'}")
-        state["published"].append(state_key)
-        state["last"] = state_key
-        save_state(state, repo)
-
-    if REPOST and not replayed:
-        print(f"REPOST {REPOST!r} matched nothing on {today}; check the label and the date.")
-        return 1
+        print(f"staying alive {int(wait)}s until {nxt:%H:%M} UTC "
+              f"({(nxt - start).total_seconds() / 60:.0f} min into this run)", flush=True)
+        time.sleep(wait)
 
     return 1 if failures else 0
 
