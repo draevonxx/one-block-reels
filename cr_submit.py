@@ -20,9 +20,13 @@ Two lanes, found two different ways:
              mistake here that can cost the clip outright.
 
 State lives in cr_submitted.json and is committed back to this repo, so the next run
-cannot repeat a submission. Auth is the CR_COOKIE secret: a browser session exported
-once, which expires on Whop's own clock. When it does, this prints one line and stops
-rather than retrying.
+cannot repeat a submission. Auth is the CR_COOKIE secret: a ~29-day session cookie
+plus a 24h access token. The token, not the session, is what dies (Nov 7 and again
+Nov 9), and every page response re-sets the server's current token in Set-Cookie -
+which is what the logged-in browser triggers every ~20 minutes. So each run harvests
+a token from one page GET instead of needing a daily re-export; only if that read
+fails too does the run exit non-zero, and the failed-run mail then means the session
+itself needs a re-export.
 
 Why a run waits instead of exiting. GitHub starts a scheduled run on this repo about
 once an hour, not once every ten minutes - the cron is committed and real, but the
@@ -42,6 +46,7 @@ from __future__ import annotations
 import base64
 import json
 import os
+import re
 import sys
 import time
 from datetime import datetime, timedelta, timezone
@@ -187,6 +192,46 @@ class Session:
         r = self.s.post(f"{BASE}/api/submission/submissions",
                         json={"campaignId": campaign_id, "url": url}, timeout=30)
         return r.status_code, (r.text or "")[:200]
+
+    def refresh_access_token(self) -> bool:
+        """Collect the access token that any page response hands to a session holder.
+
+        The exported token expires 24h after the browser minted it, but the session
+        lives ~29 days and the server re-sets its current token in Set-Cookie of every
+        page response, so one GET replaces a dead token with a live one. Values stay
+        out of the log; only names and the outcome are printed by callers.
+        """
+        try:
+            r = self.s.get(f"{BASE}/c/submissions", timeout=30,
+                           headers={"accept": "text/html"})
+        except requests.RequestException:
+            return False
+        if r.status_code != 200:
+            return False
+        sc = r.headers.get("Set-Cookie", "")
+        fresh = {}
+        for name in ("__Host-cr-session", "__Host-cr-access-token"):
+            m = re.search(re.escape(name) + r"=([^;]+)", sc)
+            if m and m.group(1).strip():
+                fresh[name] = m.group(1).strip()
+        if not fresh:
+            return False
+        pairs = []
+        seen = set()
+        for part in self.s.headers.get("cookie", "").split(";"):
+            part = part.strip()
+            if "=" in part:
+                n, v = part.split("=", 1)
+                pairs.append((n.strip(), v.strip()))
+                seen.add(n.strip())
+        for n, v in fresh.items():
+            if n in seen:
+                pairs = [(n, v) if a == n else (a, b) for a, b in pairs]
+            else:
+                pairs.append((n, v))
+        self.s.headers["cookie"] = "; ".join(f"{n}={v}" for n, v in pairs)
+        return "__Host-cr-access-token" in fresh
+
 
 
 def is_public(video_id: str, log) -> bool:
@@ -345,6 +390,10 @@ def pass_once(ses: Session, live: bool, work: dict, at: datetime):
     # a dead cookie print the same line and you only find out at the first air slot.
     vids, code = ses.candidates(CAMPAIGNS["fomo"])
     if vids is None:
+        print(f"candidates read failed ({code}); one token refresh before giving up")
+        if ses.refresh_access_token():
+            vids, code = ses.candidates(CAMPAIGNS["fomo"])
+    if vids is None:
         print(f"AUTH FAILED ({code}) - CR_COOKIE no longer works; re-export it.")
         return GIVE_UP
     lists = {CAMPAIGNS["fomo"]: {v.get("postId"): v for v in vids}}
@@ -445,6 +494,13 @@ def main() -> int:
 
     live = os.environ.get("CR_LIVE", "").strip().lower() == "true"
     ses = Session(cookie)
+    # The export's access token may already be past its 24h even though the session
+    # is weeks from expiry, so ask a page response for the server's current token
+    # before the first API call decides the run's fate.
+    harvested = ses.refresh_access_token()
+    print("session check: page GET "
+          + ("harvested a live access token" if harvested
+             else "yielded no token; using the export as-is"), flush=True)
     rows = read_json(LEDGER, [])
     work = {"rows": rows, "done": {r.get("postId") for r in rows if r.get("postId")},
             "sent": 0, "first": True, "watched": set()}
