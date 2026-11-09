@@ -83,9 +83,24 @@ SEGA = [
     ("2026-11-08", "13:30", "sv05.mp4", "sv05"),
 ]
 
+# Call of Duty MW4 Season 1 trailer clipping. One per day, 13:30 UTC = 19:00 IST,
+# the slot sv01-sv05 all aired from on this account: inside the 10:30-16:30 UTC
+# waking window, and clear of the 11:00 Manson rows that share it.
+# The brief bans violent content outright, so every cut window was chosen off a
+# per-frame red-share scan of the source and excludes all nine measured blood
+# bursts, not just the graphic ones. It also bans calling a trailer "gameplay",
+# which is why no caption or headline uses the word.
+COD = [
+    ("2026-11-09", "13:30", "cod1.mp4", "cod1"),
+    ("2026-11-10", "13:30", "cod2.mp4", "cod2"),
+    ("2026-11-11", "13:30", "cod3.mp4", "cod3"),
+    ("2026-11-12", "13:30", "cod4.mp4", "cod4"),
+    ("2026-11-13", "13:30", "cod5.mp4", "cod5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA)
+    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD)
 ]
 
 CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))
