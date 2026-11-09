@@ -68,10 +68,13 @@ CAMPAIGNS = {
     "manson": "6bdc8e4b-3ebf-44f1-aedb-067589ca9c89",
     "fomo": "2fb7df23-c446-4aa0-a8db-228015f782f8",
     "cod": "78b4e379-2aa0-4d20-9fd0-ed02a816e3b1",
+    # Warzone Season 1: IG-only. Its platforms are ["instagram","tiktok"], so there is
+    # no YouTube payout surface and no queue entry for it in cr_yt_queue.json.
+    "wz": "db285bc6-9a06-43ff-ae4b-4b5ebf149b8b",
 }
 
 # Which campaign each reel prefix belongs to. The label is the only authority.
-IG_PREFIX = {"MM": "manson", "FO": "fomo", "sv": "sega", "cod": "cod"}
+IG_PREFIX = {"MM": "manson", "FO": "fomo", "sv": "sega", "cod": "cod", "wz": "wz"}
 
 MAX_AGE_MINUTES = 30
 MARGIN_SECONDS = 60
@@ -211,6 +214,8 @@ def campaign_of(label: str):
         return IG_PREFIX["cod"]
     if label[:2].lower() == "sv":
         return IG_PREFIX["sv"]
+    if label[:2].lower() == "wz":
+        return IG_PREFIX["wz"]
     return None
 
 
