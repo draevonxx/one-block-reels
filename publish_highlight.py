@@ -83,27 +83,43 @@ SEGA = [
     ("2026-11-08", "13:30", "sv05.mp4", "sv05"),
 ]
 
-# Call of Duty MW4 Season 1 trailer clipping. One per day, 13:30 UTC = 19:00 IST,
-# the slot sv01-sv05 all aired from on this account: inside the 10:30-16:30 UTC
-# waking window, and clear of the 11:00 Manson rows that share it.
+# Call of Duty MW4 Season 1 trailer clipping. One per day, 16:00 UTC = 21:30 IST.
+# The two Call of Duty lanes are 5h apart (16:00 and 21:00) rather than the 2h they
+# first carried: same-day posts on one account compete for the same followers'
+# scroll, and a 2h gap is close enough that the second one lands on the audience
+# that already saw the first.
+# Both slots are picked for a Tier 1 majority, not for the operator's schedule -
+# see the WZ comment for why the old 10:30-16:30 UTC waking window no longer binds.
+# 16:00 UTC = 11:00 US East, 08:00 US West, 16:00 UK: three of the four Tier 1
+# regions mid-day and awake, which covers the combined USA+Canada share the brief
+# cares about. Australia is at 03:00 and asleep, accepted because the second slot
+# four hours later catches its morning.
 # The brief bans violent content outright, so every cut window was chosen off a
 # per-frame red-share scan of the source and excludes all nine measured blood
 # bursts, not just the graphic ones. It also bans calling a trailer "gameplay",
 # which is why no caption or headline uses the word.
 COD = [
-    ("2026-11-09", "13:30", "cod1.mp4", "cod1"),
-    ("2026-11-10", "13:30", "cod2.mp4", "cod2"),
-    ("2026-11-11", "13:30", "cod3.mp4", "cod3"),
-    ("2026-11-12", "13:30", "cod4.mp4", "cod4"),
-    ("2026-11-13", "13:30", "cod5.mp4", "cod5"),
+    ("2026-11-09", "16:00", "cod1.mp4", "cod1"),
+    ("2026-11-10", "16:00", "cod2.mp4", "cod2"),
+    ("2026-11-11", "16:00", "cod3.mp4", "cod3"),
+    ("2026-11-12", "16:00", "cod4.mp4", "cod4"),
+    ("2026-11-13", "16:00", "cod5.mp4", "cod5"),
 ]
 
 # Call of Duty Warzone Season 1 trailer clipping. Instagram only: the campaign's own
 # platforms list is ["instagram","tiktok"], so there is no YouTube surface to pay out on
-# and no queue row for it in cr_yt_queue.json. One per day at 15:30 UTC = 21:00 IST,
-# which is 2h clear of the 13:30 COD rows above and still inside the 10:30-16:30 UTC
-# waking window with an hour to spare - the publisher is on an hourly clock, so a slot
-# right at the edge of the window would air after the operator has gone.
+# and no queue row for it in cr_yt_queue.json. One per day at 21:00 UTC = 02:30 IST,
+# 5h clear of the 16:00 COD rows above.
+# 21:00 UTC is the one hour where all four Tier 1 regions are awake at once - 16:00
+# US East, 13:00 US West, 21:00 UK prime, 08:00 Australia commute - which is what
+# carries the brief's "audience mostly Tier 1-2, over 30% Tier 3 gets removed" rule.
+# It is the same reasoning sv04 used; what changed since then is the cost. sv04 was
+# submitted by hand after waking because Content Rewards' clock is ~29 min from the
+# reel's own publish time. That clock is now met by cr_submit.py unattended - the
+# ledger holds submissions at 21:33 and 00:03 UTC - so the 10:30-16:30 UTC waking
+# window that the earlier lanes were all constrained to no longer has to pick the
+# slot, and reach can. The publisher is on an hourly clock, so a slot is only safe
+# if the submitter's hourly run lands inside it, which it does.
 # Cut from a different source file than the COD lane (the Warzone trailer, not the MW4
 # one, and no sampled frame of either matches any frame of the other), so the two lanes
 # are not posting the same footage to the same account.
@@ -114,11 +130,11 @@ COD = [
 # away 480px at each edge, and the trailer's own "ALL OUT WARZONE" card came out of it
 # reading "VARZONE".
 WZ = [
-    ("2026-11-09", "15:30", "wz1.mp4", "wz1"),
-    ("2026-11-10", "15:30", "wz2.mp4", "wz2"),
-    ("2026-11-11", "15:30", "wz3.mp4", "wz3"),
-    ("2026-11-12", "15:30", "wz4.mp4", "wz4"),
-    ("2026-11-13", "15:30", "wz5.mp4", "wz5"),
+    ("2026-11-09", "21:00", "wz1.mp4", "wz1"),
+    ("2026-11-10", "21:00", "wz2.mp4", "wz2"),
+    ("2026-11-11", "21:00", "wz3.mp4", "wz3"),
+    ("2026-11-12", "21:00", "wz4.mp4", "wz4"),
+    ("2026-11-13", "21:00", "wz5.mp4", "wz5"),
 ]
 
 SCHEDULE = [
