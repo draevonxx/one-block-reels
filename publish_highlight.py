@@ -245,6 +245,42 @@ def save_state(state: dict, repo: str) -> None:
     print("state commit:", r.status_code)
 
 
+def fetch_remote_state(repo: str):
+    """The authoritative ledger as committed on main, or None if unreadable.
+
+    A run that slept across a slot holds the ledger from its own start. Reading
+    the remote copy right before publishing is what stops two overlapping runs
+    from both airing the same reel. None means "could not verify" - the caller
+    falls back to its in-memory state rather than skipping a due slot blind.
+    """
+    gh_token = os.environ.get("GITHUB_TOKEN", "")
+    if not gh_token or not repo:
+        return None
+    api = f"https://api.github.com/repos/{repo}/contents/{STATE_FILE}"
+    headers = {"Authorization": f"Bearer {gh_token}", "Accept": "application/vnd.github+json"}
+    try:
+        r = requests.get(api, headers=headers, timeout=30)
+        if r.status_code != 200:
+            return None
+        content = r.json().get("content", "")
+        return json.loads(base64.b64decode(content).decode("utf-8"))
+    except (requests.RequestException, ValueError, KeyError) as exc:
+        print(f"  remote state read failed: {exc}")
+        return None
+
+
+def merge_remote(state: dict, live: dict) -> None:
+    """Adopt entries another run committed while we slept, without losing ours."""
+    pub = state.setdefault("published", [])
+    for key in live.get("published", []):
+        if key not in pub:
+            pub.append(key)
+    for field in ("media", "links"):
+        state.setdefault(field, {}).update(live.get(field, {}))
+    if live.get("last"):
+        state["last"] = live["last"]
+
+
 # GitHub only starts a scheduled run here about once an hour however often the
 # cron ticks, so a one-pass script airs every slot late - and a late airing can
 # blow the Content Rewards window, which is counted from the scheduled moment.
@@ -349,6 +385,20 @@ def publish_entry(entry: dict, state: dict, repo: str, now: datetime,
     else:
         print("Processing timed out; the next run will retry.")
         return "failed"
+
+    # Last reversible point: the reel goes public on media_publish, not on the
+    # container upload above. A run that slept across this slot can start its
+    # container before another run commits the ledger, so the live re-check has
+    # to sit here. If the slot is already aired, let this container expire unused
+    # rather than post a second copy.
+    if not force:
+        live = fetch_remote_state(repo)
+        if live is not None:
+            merge_remote(state, live)
+            if state_key in live.get("published", []):
+                print(f"{day}: already published by another run (remote ledger); "
+                      "dropping this container, not publishing.")
+                return "skip"
 
     p = requests.post(
         f"{GRAPH}/{IG_USER_ID}/media_publish",
