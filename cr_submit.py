@@ -206,9 +206,12 @@ class Session:
         try:
             r = self.s.get(f"{BASE}/c/submissions", timeout=30,
                            headers={"accept": "text/html"})
-        except requests.RequestException:
+        except requests.RequestException as e:
+            print(f"  page GET raised {type(e).__name__}", flush=True)
             return False
         if r.status_code != 200:
+            print(f"  page GET status {r.status_code} (server={r.headers.get('server', '-')}, "
+                  f"cf-mitigated={r.headers.get('cf-mitigated', '-')})", flush=True)
             return False
         sc = r.headers.get("Set-Cookie", "")
         fresh = {}
@@ -217,6 +220,8 @@ class Session:
             if m and m.group(1).strip():
                 fresh[name] = m.group(1).strip()
         if not fresh:
+            print(f"  page GET 200 but Set-Cookie carried no cr token "
+                  f"(set-cookie present: {bool(sc)})", flush=True)
             return False
         pairs = []
         seen = set()
