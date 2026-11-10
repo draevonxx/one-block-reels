@@ -395,18 +395,22 @@ def pass_once(ses: Session, live: bool, work: dict, at: datetime):
     # Always read one campaign, even when nothing looks due: this is what tells the
     # owner the exported session still works from this IP. Without it, a quiet day and
     # a dead cookie print the same line and you only find out at the first air slot.
-    vids, code = ses.candidates(CAMPAIGNS["fomo"])
+    # The probe must be a LIVE campaign: fomo closed on 2026-11-10 and a closed
+    # campaign answers 403 here, which is indistinguishable from a dead session.
+    probe_id = CAMPAIGNS["perplexity"]
+    vids, code = ses.candidates(probe_id)
     if vids is None:
         print(f"candidates read failed ({code}); one token refresh before giving up")
         if ses.refresh_access_token():
-            vids, code = ses.candidates(CAMPAIGNS["fomo"])
+            vids, code = ses.candidates(probe_id)
     if vids is None:
         print(f"AUTH FAILED ({code}) - CR_COOKIE no longer works; re-export it.")
         return GIVE_UP
-    lists = {CAMPAIGNS["fomo"]: {v.get("postId"): v for v in vids}}
+    lists = {probe_id: {v.get("postId"): v for v in vids}}
     if was_first:
         work["first"] = False
-        print(f"session ok from this IP at {at:%H:%M} UTC; {len(vids)} posts listed for fomo; "
+        print(f"session ok from this IP at {at:%H:%M} UTC; {len(vids)} posts listed "
+              f"for perplexity; "
               f"mode={'LIVE, will submit' if live else 'read-only, reports only'}", flush=True)
 
     ig = ig_targets(state, done, at)
