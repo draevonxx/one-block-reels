@@ -399,6 +399,8 @@ def publish_entry(entry: dict, state: dict, repo: str, now: datetime,
                 print(f"{day}: already published by another run (remote ledger); "
                       "dropping this container, not publishing.")
                 return "skip"
+            print(f"{day}: ledger re-checked before publish "
+                  f"({len(live.get('published', []))} slots already in the ledger)")
 
     p = requests.post(
         f"{GRAPH}/{IG_USER_ID}/media_publish",
