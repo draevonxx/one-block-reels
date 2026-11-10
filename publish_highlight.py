@@ -138,9 +138,20 @@ WZ = [
     ("2026-11-13", "21:00", "wz5.mp4", "wz5"),
 ]
 
+# ClipFarm x Perplexity (campaign 8663de46). YT Shorts carried px1-px5 first on
+# Nov 10; the IG leg starts the day COD/WZ end so the lane never runs two paid
+# slots against each other. One per day keeps the 40%-US gate observable per post.
+PX = [
+    ("2026-11-14", "21:00", "px1.mp4", "px1"),
+    ("2026-11-15", "21:00", "px2.mp4", "px2"),
+    ("2026-11-16", "21:00", "px3.mp4", "px3"),
+    ("2026-11-17", "21:00", "px4.mp4", "px4"),
+    ("2026-11-18", "21:00", "px5.mp4", "px5"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ)
+    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ, *PX)
 ]
 
 CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))
