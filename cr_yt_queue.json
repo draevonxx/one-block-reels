@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-09T11:40:15Z",
- "note": "Written by tools/cr_make_queue.py on the laptop. items are the YouTube clips the Actions submitter has to paste, because the platform's own crawler is out of quota on these channels. igWatch is only the planned Instagram air times: the runner cannot know a reel is coming until the publisher records it, and without this it exits rather than wait for a post that is minutes away. Every row is derived - the YouTube lanes from their schedule files, the Instagram-only lanes straight out of publish_highlight.py - so arming a lane is one commit, not two. 2026-11-10: FOMO and Manson campaigns are closed per the user; their rows were removed so the submitter stops filing the remaining FO/MM shorts. SEGA rows stay (sv04/sv05 still owed).",
+ "generatedAt": "2026-11-10T12:01:26Z",
+ "note": "Written by tools/cr_make_queue.py on the laptop. items are the YouTube clips the Actions submitter has to paste, because the platform's own crawler is out of quota on these channels. igWatch is only the planned Instagram air times: the runner cannot know a reel is coming until the publisher records it, and without this it exits rather than wait for a post that is minutes away. Every row is derived - the YouTube lanes from their schedule files, the Instagram-only lanes straight out of publish_highlight.py - so arming a lane is one commit, not two.",
  "items": [
   {
    "campaign": "sega",
@@ -48,7 +48,7 @@
    "label": "px1",
    "videoId": "WbpzrPjEaP8",
    "url": "https://www.youtube.com/watch?v=WbpzrPjEaP8",
-   "airAt": "2026-11-10T15:00:00Z"
+   "airAt": "2026-11-10T21:00:00Z"
   },
   {
    "campaign": "perplexity",
@@ -56,7 +56,7 @@
    "label": "px2",
    "videoId": "K3KG-52djFE",
    "url": "https://www.youtube.com/watch?v=K3KG-52djFE",
-   "airAt": "2026-11-10T15:30:00Z"
+   "airAt": "2026-11-11T21:00:00Z"
   },
   {
    "campaign": "perplexity",
@@ -64,7 +64,7 @@
    "label": "px3",
    "videoId": "4gxqIyOL26I",
    "url": "https://www.youtube.com/watch?v=4gxqIyOL26I",
-   "airAt": "2026-11-10T16:00:00Z"
+   "airAt": "2026-11-12T21:00:00Z"
   },
   {
    "campaign": "perplexity",
@@ -72,7 +72,7 @@
    "label": "px4",
    "videoId": "yl28oPgD9AQ",
    "url": "https://www.youtube.com/watch?v=yl28oPgD9AQ",
-   "airAt": "2026-11-10T16:30:00Z"
+   "airAt": "2026-11-13T21:00:00Z"
   },
   {
    "campaign": "perplexity",
@@ -80,7 +80,7 @@
    "label": "px5",
    "videoId": "1dq8euNDmHI",
    "url": "https://www.youtube.com/watch?v=1dq8euNDmHI",
-   "airAt": "2026-11-10T17:00:00Z"
+   "airAt": "2026-11-14T21:00:00Z"
   }
  ],
  "igWatch": [
@@ -158,6 +158,31 @@
    "campaign": "wz",
    "label": "wz5",
    "airAt": "2026-11-13T21:00:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "label": "px1",
+   "airAt": "2026-11-14T21:00:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "label": "px2",
+   "airAt": "2026-11-15T21:00:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "label": "px3",
+   "airAt": "2026-11-16T21:00:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "label": "px4",
+   "airAt": "2026-11-17T21:00:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "label": "px5",
+   "airAt": "2026-11-18T21:00:00Z"
   }
  ]
 }

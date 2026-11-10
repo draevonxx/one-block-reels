@@ -81,7 +81,8 @@ CAMPAIGNS = {
 }
 
 # Which campaign each reel prefix belongs to. The label is the only authority.
-IG_PREFIX = {"MM": "manson", "FO": "fomo", "sv": "sega", "cod": "cod", "wz": "wz"}
+IG_PREFIX = {"MM": "manson", "FO": "fomo", "sv": "sega", "cod": "cod", "wz": "wz",
+             "px": "perplexity"}
 
 MAX_AGE_MINUTES = 30
 MARGIN_SECONDS = 60
@@ -268,6 +269,8 @@ def campaign_of(label: str):
         return IG_PREFIX["sv"]
     if label[:2].lower() == "wz":
         return IG_PREFIX["wz"]
+    if label[:2].lower() == "px":
+        return IG_PREFIX["px"]
     return None
 
 

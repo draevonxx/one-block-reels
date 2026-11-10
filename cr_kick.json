@@ -1,5 +1,5 @@
 {
  "note": "Touch this file and push to start 'Submit campaign clips' immediately - the workflow has no other on-demand trigger reachable from a terminal. Nothing reads it.",
- "kickedAt": "2026-11-10T11:08:51Z",
- "reason": "probe fix: use a live campaign (perplexity) for the session check"
+ "kickedAt": "2026-11-10T12:01:47Z",
+ "reason": "px YT retimed to one per day Nov 10-14 21:00 UTC; fresh run to hold the px1 slot"
 }
