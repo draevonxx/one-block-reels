@@ -1,5 +1,5 @@
 {
  "note": "Touch this file and push to start 'Submit campaign clips' immediately - the workflow has no other on-demand trigger reachable from a terminal. Nothing reads it.",
- "kickedAt": "2026-11-10T10:54:32Z",
- "reason": "retry after one 403 with no harvested token; checking for a transient Cloudflare flake"
+ "kickedAt": "2026-11-10T10:56:16Z",
+ "reason": "diagnostic kick: page-GET status now logged"
 }
