@@ -76,6 +76,8 @@ CAMPAIGNS = {
     # Warzone Season 1: IG-only. Its platforms are ["instagram","tiktok"], so there is
     # no YouTube payout surface and no queue entry for it in cr_yt_queue.json.
     "wz": "db285bc6-9a06-43ff-ae4b-4b5ebf149b8b",
+    # ClipFarm x Perplexity: YT Shorts first (2026-11-10), IG follows after COD/WZ end.
+    "perplexity": "8663de46-a5c9-4ab8-9368-7c462a78aa4e",
 }
 
 # Which campaign each reel prefix belongs to. The label is the only authority.

@@ -41,6 +41,46 @@
    "videoId": "27lJ_aU1ncM",
    "url": "https://www.youtube.com/watch?v=27lJ_aU1ncM",
    "airAt": "2026-11-08T13:30:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "campaignId": "8663de46-a5c9-4ab8-9368-7c462a78aa4e",
+   "label": "px1",
+   "videoId": "WbpzrPjEaP8",
+   "url": "https://www.youtube.com/watch?v=WbpzrPjEaP8",
+   "airAt": "2026-11-10T15:00:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "campaignId": "8663de46-a5c9-4ab8-9368-7c462a78aa4e",
+   "label": "px2",
+   "videoId": "K3KG-52djFE",
+   "url": "https://www.youtube.com/watch?v=K3KG-52djFE",
+   "airAt": "2026-11-10T15:30:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "campaignId": "8663de46-a5c9-4ab8-9368-7c462a78aa4e",
+   "label": "px3",
+   "videoId": "4gxqIyOL26I",
+   "url": "https://www.youtube.com/watch?v=4gxqIyOL26I",
+   "airAt": "2026-11-10T16:00:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "campaignId": "8663de46-a5c9-4ab8-9368-7c462a78aa4e",
+   "label": "px4",
+   "videoId": "yl28oPgD9AQ",
+   "url": "https://www.youtube.com/watch?v=yl28oPgD9AQ",
+   "airAt": "2026-11-10T16:30:00Z"
+  },
+  {
+   "campaign": "perplexity",
+   "campaignId": "8663de46-a5c9-4ab8-9368-7c462a78aa4e",
+   "label": "px5",
+   "videoId": "1dq8euNDmHI",
+   "url": "https://www.youtube.com/watch?v=1dq8euNDmHI",
+   "airAt": "2026-11-10T17:00:00Z"
   }
  ],
  "igWatch": [
