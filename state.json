@@ -66,9 +66,10 @@
     "2026-11-10|GOLD 05",
     "2026-11-11|BLD 2",
     "2026-11-11|GOLD 06",
-    "2026-11-12|BLD 3"
+    "2026-11-12|BLD 3",
+    "2026-11-12|GOLD 07"
   ],
-  "last": "2026-11-12|BLD 3",
+  "last": "2026-11-12|GOLD 07",
   "media": {
     "2026-10-30|SUPO 01": "18135385603746838",
     "2026-10-30|DAY 6": "18132595240748424",
@@ -123,7 +124,8 @@
     "2026-11-10|GOLD 05": "18172041229476603",
     "2026-11-11|BLD 2": "18115719845137767",
     "2026-11-11|GOLD 06": "18126367423712947",
-    "2026-11-12|BLD 3": "17957990781289467"
+    "2026-11-12|BLD 3": "17957990781289467",
+    "2026-11-12|GOLD 07": "18111961757224198"
   },
   "links": {
     "2026-11-06|SUPO 16": "https://www.instagram.com/reel/DfaJkgagWP5/",
@@ -179,6 +181,7 @@
     "2026-11-10|GOLD 05": "https://www.instagram.com/reel/DfkqXfwiiLz/",
     "2026-11-11|BLD 2": "https://www.instagram.com/reel/Dfl2f_KicP6/",
     "2026-11-11|GOLD 06": "https://www.instagram.com/reel/DfnRUCVnHRg/",
-    "2026-11-12|BLD 3": "https://www.instagram.com/reel/DfoaWjvD2hu/"
+    "2026-11-12|BLD 3": "https://www.instagram.com/reel/DfoaWjvD2hu/",
+    "2026-11-12|GOLD 07": "https://www.instagram.com/reel/DfpxoKRJZIw/"
   }
 }
