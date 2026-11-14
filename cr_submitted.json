@@ -284,5 +284,23 @@
   "url": "https://www.instagram.com/reel/DfsApYlAjVu/",
   "publishedAt": "2026-11-13T16:00:37.000Z",
   "submittedAt": "2026-11-13T16:04:00Z"
+ },
+ {
+  "campaign": "sega",
+  "campaignId": "8b79c473-d295-4901-8aee-e43c7ad03663",
+  "postId": "DfapQC7joMk",
+  "platform": "instagram",
+  "url": "https://www.instagram.com/reel/DfapQC7joMk/",
+  "publishedAt": "2026-11-06T22:09:05.000Z",
+  "submittedAt": "2026-11-06T22:10:00Z"
+ },
+ {
+  "campaign": "sega",
+  "campaignId": "8b79c473-d295-4901-8aee-e43c7ad03663",
+  "postId": "p2jqX_wpEq0",
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=p2jqX_wpEq0",
+  "publishedAt": null,
+  "submittedAt": "2026-11-07T21:03:00Z"
  }
 ]
