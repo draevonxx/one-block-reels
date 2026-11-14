@@ -311,5 +311,14 @@
   "url": "https://www.youtube.com/watch?v=p2jqX_wpEq0",
   "publishedAt": null,
   "submittedAt": "2026-11-07T21:03:00Z"
+ },
+ {
+  "campaign": "perplexity",
+  "campaignId": "8663de46-a5c9-4ab8-9368-7c462a78aa4e",
+  "postId": "1dq8euNDmHI",
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=1dq8euNDmHI",
+  "publishedAt": null,
+  "submittedAt": "2026-11-14T21:03:00Z"
  }
 ]
