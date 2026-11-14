@@ -366,23 +366,60 @@ def record(work: dict, t: dict, at: datetime, published_at=None) -> None:
     print(f"SUBMITTED {t['campaign']}/{t['label']} {t['kind']} {t['url']}", flush=True)
 
 
-def commit(path: str, obj, message: str) -> None:
+def commit(path: str, obj, message: str) -> list:
+    """Write the ledger back on top of whatever another runner put there while we slept.
+
+    A run stays alive for up to HORIZON_MINUTES (300), so `obj` was read as much as five
+    hours ago, and the 16:00 and 21:00 slots overlap every day. Writing the stale list
+    back is what deleted cod3, cod4 and cod5 from cr_submitted.json between Nov 11 and
+    Nov 13: each was filed at 16:04 and each vanished when a run that had read the
+    ledger at 16:03 committed after wz's 21:03 filing. The GET that fetches the sha
+    already returns the file's current bytes, so merging costs no extra request.
+
+    Returns the postIds found on the branch that this run had not filed, so the caller
+    can add them to its duplicate guard.
+    """
     token = os.environ.get("GITHUB_TOKEN", "")
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     if not token or not repo:
         print("no GITHUB_TOKEN/GITHUB_REPOSITORY: state not persisted, a rerun may repeat")
-        return
+        return []
     api = f"https://api.github.com/repos/{repo}/contents/{path}"
     headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
-    sha = None
-    existing = requests.get(api, headers=headers, timeout=30)
-    if existing.status_code == 200:
-        sha = existing.json().get("sha")
-    body = {"message": message,
-            "content": base64.b64encode(json.dumps(obj, indent=1, ensure_ascii=False).encode()).decode()}
-    if sha:
-        body["sha"] = sha
-    print("ledger commit:", requests.put(api, headers=headers, json=body, timeout=30).status_code)
+    learned = []
+    for attempt in (1, 2):
+        sha, remote = None, []
+        existing = requests.get(api, headers=headers, timeout=30)
+        if existing.status_code == 200:
+            doc = existing.json()
+            sha = doc.get("sha")
+            try:
+                remote = json.loads(base64.b64decode(doc.get("content") or "").decode())
+            except (ValueError, TypeError, UnicodeDecodeError):
+                remote = []
+            if not isinstance(remote, list):
+                print("  remote ledger is not a list; writing this run's rows alone")
+                remote = []
+        merged = list(obj)
+        mine = {r.get("postId") or r.get("url") for r in obj}
+        for r in remote:
+            if (r.get("postId") or r.get("url")) in mine:
+                continue
+            merged.append(r)
+            if r.get("postId"):
+                learned.append(r["postId"])
+        body = {"message": message,
+                "content": base64.b64encode(
+                    json.dumps(merged, indent=1, ensure_ascii=False).encode()).decode()}
+        if sha:
+            body["sha"] = sha
+        status = requests.put(api, headers=headers, json=body, timeout=30).status_code
+        print(f"ledger commit (try {attempt}, {len(merged)} rows):", status, flush=True)
+        if status not in (409, 412):
+            obj[:] = merged
+            return learned
+    print("  ledger still conflicting; a rerun may repeat a submission")
+    return learned
 
 
 def pass_once(ses: Session, live: bool, work: dict, at: datetime):
@@ -457,7 +494,7 @@ def pass_once(ses: Session, live: bool, work: dict, at: datetime):
         status, reply = ses.submit(cid, t["url"])
         if status in (200, 201):
             record(work, t, at, published_at=v.get("publishedAt"))
-            commit(LEDGER, rows, f"cr: {t['campaign']}/{t['label']}")
+            work["done"].update(commit(LEDGER, rows, f"cr: {t['campaign']}/{t['label']}"))
         else:
             notes.append(f"{t['label']} refused {status} {reply[:90]}")
 
@@ -472,7 +509,7 @@ def pass_once(ses: Session, live: bool, work: dict, at: datetime):
         status, reply = ses.submit(t["campaignId"], t["url"])
         if status in (200, 201):
             record(work, t, at)
-            commit(LEDGER, rows, f"cr: {t['campaign']}/{t['label']}")
+            work["done"].update(commit(LEDGER, rows, f"cr: {t['campaign']}/{t['label']}"))
         else:
             notes.append(f"{t['label']} refused {status} {reply[:90]}")
 
