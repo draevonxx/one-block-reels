@@ -209,9 +209,18 @@ SV = [
     ("2026-11-06", "22:00", "sv02.mp4", "sv02"),
 ]
 
+# SEGA Football Manager 27, Spanish/LATAM board (8360ae4f). One test reel to answer the
+# gate no API can read: that board demands a 50% Mexico + Argentina audience and says it
+# verifies with OAuth, so only an approval or a rejection proves whether this page clears
+# it. 00:00 UTC is 18:00 Mexico City and 21:00 Buenos Aires, peak evening in both at once,
+# and 6 h clear of this lane's 06:00 row.
+FM27ES = [
+    ("2026-11-15", "00:00", "fms1.mp4", "fms1"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV + FM27ES
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))

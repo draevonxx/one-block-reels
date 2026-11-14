@@ -78,11 +78,15 @@ CAMPAIGNS = {
     "wz": "db285bc6-9a06-43ff-ae4b-4b5ebf149b8b",
     # ClipFarm x Perplexity: YT Shorts first (2026-11-10), IG follows after COD/WZ end.
     "perplexity": "8663de46-a5c9-4ab8-9368-7c462a78aa4e",
+    # SEGA FM27 Spanish/LATAM. Best-paying board in the Clipping Culture roster at
+    # $32.40 per approved post (IG $1.72/1k), gated on a 50% MX+AR audience that
+    # Content Rewards says it verifies with OAuth. fms1 is the test that finds out.
+    "fm27es": "8360ae4f-c36b-4a75-bbf6-a2d748aae602",
 }
 
 # Which campaign each reel prefix belongs to. The label is the only authority.
 IG_PREFIX = {"MM": "manson", "FO": "fomo", "sv": "sega", "cod": "cod", "wz": "wz",
-             "px": "perplexity"}
+             "px": "perplexity", "fms": "fm27es"}
 
 MAX_AGE_MINUTES = 30
 MARGIN_SECONDS = 60
@@ -265,6 +269,8 @@ def campaign_of(label: str):
         return IG_PREFIX[head]
     if label[:3].lower() == "cod":
         return IG_PREFIX["cod"]
+    if label[:3].lower() == "fms":
+        return IG_PREFIX["fms"]
     if label[:2].lower() == "sv":
         return IG_PREFIX["sv"]
     if label[:2].lower() == "wz":
