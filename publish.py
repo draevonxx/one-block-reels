@@ -212,10 +212,11 @@ SV = [
 # SEGA Football Manager 27, Spanish/LATAM board (8360ae4f). One test reel to answer the
 # gate no API can read: that board demands a 50% Mexico + Argentina audience and says it
 # verifies with OAuth, so only an approval or a rejection proves whether this page clears
-# it. 00:00 UTC is 18:00 Mexico City and 21:00 Buenos Aires, peak evening in both at once,
-# and 6 h clear of this lane's 06:00 row.
+# it. Not midnight: the board's two fastest clips aired 17:53 and 17:56 UTC and its slowest
+# cluster 00:15 to 01:08, and a 00:00 slot sits on the UTC seam where cr_submit's watch can
+# miss the 29-minute filing window. 16:00 is the closest the 3 h gap to GOLD 10 allows.
 FM27ES = [
-    ("2026-11-15", "00:00", "fms1.mp4", "fms1"),
+    ("2026-11-15", "16:00", "fms1.mp4", "fms1"),
 ]
 
 SCHEDULE = [
