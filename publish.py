@@ -217,6 +217,7 @@ SV = [
 # miss the 29-minute filing window. 16:00 is the closest the 3 h gap to GOLD 10 allows.
 FM27ES = [
     ("2026-11-15", "16:00", "fms1.mp4", "fms1"),
+    ("2026-11-16", "16:00", "fms2.mp4", "fms2"),
 ]
 
 SCHEDULE = [
