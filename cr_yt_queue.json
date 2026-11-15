@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T17:33:19Z",
+ "generatedAt": "2026-11-15T17:50:22Z",
  "note": "Written by tools/cr_make_queue.py on the laptop. items are the YouTube clips the Actions submitter has to paste, because the platform's own crawler is out of quota on these channels. igWatch is only the planned Instagram air times: the runner cannot know a reel is coming until the publisher records it, and without this it exits rather than wait for a post that is minutes away. Every row is derived - the YouTube lanes from their schedule files, the Instagram-only lanes straight out of publish_highlight.py - so arming a lane is one commit, not two.",
  "items": [
   {
@@ -177,7 +177,7 @@
   {
    "campaign": "fm27es",
    "label": "fms2",
-   "airAt": "2026-11-16T16:00:00Z"
+   "airAt": "2026-11-15T22:00:00Z"
   },
   {
    "campaign": "perplexity",
