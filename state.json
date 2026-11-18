@@ -91,9 +91,10 @@
     "2026-11-17|LBR 5",
     "2026-11-17|GOLD 12",
     "2026-11-18|PRI 5",
-    "2026-11-18|EXP 1"
+    "2026-11-18|EXP 1",
+    "2026-11-18|PRI 1"
   ],
-  "last": "2026-11-18|EXP 1",
+  "last": "2026-11-18|PRI 1",
   "media": {
     "2026-10-30|SUPO 01": "18135385603746838",
     "2026-10-30|DAY 6": "18132595240748424",
@@ -173,7 +174,8 @@
     "2026-11-17|LBR 5": "17871779436663145",
     "2026-11-17|GOLD 12": "17964482540999230",
     "2026-11-18|PRI 5": "17995755978069085",
-    "2026-11-18|EXP 1": "18094911644690769"
+    "2026-11-18|EXP 1": "18094911644690769",
+    "2026-11-18|PRI 1": "18127577848860722"
   },
   "links": {
     "2026-11-06|SUPO 16": "https://www.instagram.com/reel/DfaJkgagWP5/",
@@ -254,6 +256,7 @@
     "2026-11-17|LBR 5": "https://www.instagram.com/reel/Df16oNwDLs0/",
     "2026-11-17|GOLD 12": "https://www.instagram.com/reel/Df2rTN8lSSj/",
     "2026-11-18|PRI 5": "https://www.instagram.com/reel/Df34JdGgfGh/",
-    "2026-11-18|EXP 1": "https://www.instagram.com/reel/Df4NbvvDe6W/"
+    "2026-11-18|EXP 1": "https://www.instagram.com/reel/Df4NbvvDe6W/",
+    "2026-11-18|PRI 1": "https://www.instagram.com/reel/Df4hQxNjUSF/"
   }
 }
