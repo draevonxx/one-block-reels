@@ -220,9 +220,25 @@ FM27ES = [
     ("2026-11-15", "22:00", "fms2.mp4", "fms2"),
 ]
 
+# GTA 6 launch clips, no-commentary gameplay (10-part, 4 h cadence, mirrored from the
+# YT DIABOX lane; odd clips only so no reel runs on both IG accounts).
+GTA6 = [
+    ("2026-11-19", "02:30", "gta6_01.mp4", "GTA6 01"),
+    ("2026-11-19", "06:30", "gta6_02.mp4", "GTA6 02"),
+    ("2026-11-19", "10:30", "gta6_03.mp4", "GTA6 03"),
+    ("2026-11-19", "14:30", "gta6_04.mp4", "GTA6 04"),
+    ("2026-11-19", "18:30", "gta6_05.mp4", "GTA6 05"),
+    ("2026-11-19", "22:30", "gta6_06.mp4", "GTA6 06"),
+    ("2026-11-20", "02:30", "gta6_07.mp4", "GTA6 07"),
+    ("2026-11-20", "06:30", "gta6_08.mp4", "GTA6 08"),
+    ("2026-11-20", "10:30", "gta6_09.mp4", "GTA6 09"),
+    ("2026-11-20", "14:30", "gta6_10.mp4", "GTA6 10"),
+]
+
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV + FM27ES
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV + FM27ES + GTA6
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))

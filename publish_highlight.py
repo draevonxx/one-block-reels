@@ -149,9 +149,25 @@ PX = [
     ("2026-11-18", "21:00", "px5.mp4", "px5"),
 ]
 
+
+# GTA 6 launch clips, no-commentary gameplay (10-part, 4 h cadence, mirrored from the
+# YT Scrollsociety lane; even clips only so no reel runs on both IG accounts).
+GTA6H = [
+    ("2026-11-19", "04:30", "gta6h_01.mp4", "GTA6H 01"),
+    ("2026-11-19", "08:30", "gta6h_02.mp4", "GTA6H 02"),
+    ("2026-11-19", "12:30", "gta6h_03.mp4", "GTA6H 03"),
+    ("2026-11-19", "16:30", "gta6h_04.mp4", "GTA6H 04"),
+    ("2026-11-19", "20:30", "gta6h_05.mp4", "GTA6H 05"),
+    ("2026-11-20", "00:30", "gta6h_06.mp4", "GTA6H 06"),
+    ("2026-11-20", "04:30", "gta6h_07.mp4", "GTA6H 07"),
+    ("2026-11-20", "08:30", "gta6h_08.mp4", "GTA6H 08"),
+    ("2026-11-20", "12:30", "gta6h_09.mp4", "GTA6H 09"),
+    ("2026-11-20", "16:30", "gta6h_10.mp4", "GTA6H 10"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ, *PX)
+    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ, *PX, *GTA6H)
 ]
 
 CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))
