@@ -165,9 +165,21 @@ GTA6H = [
     ("2026-11-20", "16:30", "gta6h_10.mp4", "GTA6H 10"),
 ]
 
+# iShowSpeed GTA 6 first playthrough (VOD kR8bhkVAgBY), recut 2026-11-20 with a 4 s
+# punch cold open and a 23 s cap. This page takes the ODD clips; the even ones go to
+# @draevonxx, so no clip runs on both Instagram accounts. Slots keep the Supo Clip
+# app's pattern (00:30 / 18:30 UTC) on the campaign side of the batch, Nov 24-26.
+SPD6H = [
+    ("2026-11-24", "00:30", "spd6h_01.mp4", "spd6h_01"),
+    ("2026-11-24", "18:30", "spd6h_03.mp4", "spd6h_03"),
+    ("2026-11-25", "00:30", "spd6h_05.mp4", "spd6h_05"),
+    ("2026-11-25", "18:30", "spd6h_07.mp4", "spd6h_07"),
+    ("2026-11-26", "00:30", "spd6h_09.mp4", "spd6h_09"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ, *PX, *GTA6H)
+    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ, *PX, *GTA6H, *SPD6H)
 ]
 
 CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))

@@ -607,6 +607,101 @@
    "clip": "GTA #5",
    "position": 66,
    "label": "GTA 5"
+  },
+  "sv02.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "sv02"
+  },
+  "fms1.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "fms1"
+  },
+  "fms2.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "fms2"
+  },
+  "gta6_01.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 01"
+  },
+  "gta6_02.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 02"
+  },
+  "gta6_03.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 03"
+  },
+  "gta6_04.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 04"
+  },
+  "gta6_05.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 05"
+  },
+  "gta6_06.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 06"
+  },
+  "gta6_07.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 07"
+  },
+  "gta6_08.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 08"
+  },
+  "gta6_09.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 09"
+  },
+  "gta6_10.mp4": {
+   "status": "UNVERIFIED",
+   "note": "no schedule clip byte-matches this reel",
+   "label": "GTA6 10"
+  },
+  "spd6_02.mp4": {
+   "status": "PASS",
+   "note": "4.0s teaser, jumps 3s ahead",
+   "clip": "UCd7bXOw5pfU5_nGbc7nsSoQ #spd6_02",
+   "label": "spd6_02"
+  },
+  "spd6_04.mp4": {
+   "status": "PASS",
+   "note": "4.0s teaser, jumps 3s ahead",
+   "clip": "UCd7bXOw5pfU5_nGbc7nsSoQ #spd6_04",
+   "label": "spd6_04"
+  },
+  "spd6_06.mp4": {
+   "status": "PASS",
+   "note": "4.0s teaser, jumps 3s ahead",
+   "clip": "UCd7bXOw5pfU5_nGbc7nsSoQ #spd6_06",
+   "label": "spd6_06"
+  },
+  "spd6_08.mp4": {
+   "status": "PASS",
+   "note": "4.0s teaser, jumps 3s ahead",
+   "clip": "UCd7bXOw5pfU5_nGbc7nsSoQ #spd6_08",
+   "label": "spd6_08"
+  },
+  "spd6_10.mp4": {
+   "status": "PASS",
+   "note": "4.0s teaser, jumps 3s ahead",
+   "clip": "UCd7bXOw5pfU5_nGbc7nsSoQ #spd6_10",
+   "label": "spd6_10"
   }
  }
 }

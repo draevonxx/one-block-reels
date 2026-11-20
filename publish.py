@@ -235,10 +235,24 @@ GTA6 = [
     ("2026-11-20", "14:30", "gta6_10.mp4", "GTA6 10"),
 ]
 
+# iShowSpeed GTA 6 first playthrough (VOD kR8bhkVAgBY), recut 2026-11-20 with a 4 s
+# punch cold open and a 23 s cap. This page takes the EVEN clips; the odd ones go to
+# @scrollsociety.mp4, so no clip ever runs on both Instagram accounts. The slots keep
+# the Supo Clip app's own pattern (18:30 / 00:30 UTC), shifted a day to start Nov 21.
+# Caption keys are the reel stems: that is how tools/build_speed6_schedule.py writes
+# captions.json, and the hook gate byte-matches each reel back to its source clip.
+SPD6 = [
+    ("2026-11-21", "18:30", "spd6_02.mp4", "spd6_02"),
+    ("2026-11-22", "00:30", "spd6_04.mp4", "spd6_04"),
+    ("2026-11-22", "18:30", "spd6_06.mp4", "spd6_06"),
+    ("2026-11-23", "00:30", "spd6_08.mp4", "spd6_08"),
+    ("2026-11-23", "18:30", "spd6_10.mp4", "spd6_10"),
+]
+
 
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV + FM27ES + GTA6
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV + FM27ES + GTA6 + SPD6
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
