@@ -67,6 +67,8 @@ COPS = [
 ]
 
 # Goldmine clips, virality >80, one per day at 19:00 UTC
+# Pulled 2026-11-24, along with the December PRISON/EXPLOSION rows: this page runs
+# GTA only now, so gold14-18 / pr2-4,6-8 / exp2-5 have no slot and no reel file.
 GOLD = [
     ("2026-11-06", "19:00", "gold01.mp4", "GOLD 01"),
     ("2026-11-07", "19:00", "gold02.mp4", "GOLD 02"),
@@ -81,11 +83,6 @@ GOLD = [
     ("2026-11-16", "19:00", "gold11.mp4", "GOLD 11"),
     ("2026-11-17", "19:00", "gold12.mp4", "GOLD 12"),
     ("2026-11-18", "19:00", "gold13.mp4", "GOLD 13"),
-    ("2026-12-19", "19:00", "gold14.mp4", "GOLD 14"),
-    ("2026-12-20", "19:00", "gold15.mp4", "GOLD 15"),
-    ("2026-12-21", "19:00", "gold16.mp4", "GOLD 16"),
-    ("2026-12-22", "19:00", "gold17.mp4", "GOLD 17"),
-    ("2026-12-23", "19:00", "gold18.mp4", "GOLD 18"),
 ]
 
 
@@ -171,21 +168,11 @@ LEBRON = [
 PRISON = [
     ("2026-11-18", "06:00", "pr5.mp4", "PRI 5"),
     ("2026-11-18", "12:00", "pr1.mp4", "PRI 1"),
-    ("2026-12-19", "09:00", "pr4.mp4", "PRI 4"),
-    ("2026-12-20", "06:00", "pr6.mp4", "PRI 6"),
-    ("2026-12-20", "12:00", "pr3.mp4", "PRI 3"),
-    ("2026-12-21", "09:00", "pr8.mp4", "PRI 8"),
-    ("2026-12-21", "12:00", "pr2.mp4", "PRI 2"),
-    ("2026-12-22", "06:00", "pr7.mp4", "PRI 7"),
 ]
 
 # MrBeast Gaming - $10,000 Every Explosion You Survive (Nov 18 - Nov 21, 2026).
 EXPLOSION = [
     ("2026-11-18", "09:00", "exp1.mp4", "EXP 1"),
-    ("2026-12-19", "06:00", "exp5.mp4", "EXP 5"),
-    ("2026-12-19", "12:00", "exp3.mp4", "EXP 3"),
-    ("2026-12-20", "09:00", "exp2.mp4", "EXP 2"),
-    ("2026-12-21", "06:00", "exp4.mp4", "EXP 4"),
 ]
 
 # GTA V story mode, 5-part arc (Nov 6 - Nov 10, 2026).
