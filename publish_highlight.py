@@ -177,12 +177,31 @@ SPD6H = [
     ("2026-11-26", "00:30", "spd6h_09.mp4", "spd6h_09"),
 ]
 
+# iShowSpeed GTA 6 12-clip batch (VODs 91c96JtcIFg + OIeLbmyraRQ), cut 2026-11-26
+# with a 4.2 s punch cold open. This page takes the ODD clips; the even ones go to
+# @draevonxx, so no clip runs on both Instagram accounts. 21:00 UTC is the only hour
+# where US East, US West, the UK and Australia are all awake at once.
+SPD12H = [
+    ("2026-11-28", "21:00", "spd12h_01.mp4", "spd12h_01"),
+    ("2026-11-30", "21:00", "spd12h_03.mp4", "spd12h_03"),
+    ("2026-12-02", "21:00", "spd12h_05.mp4", "spd12h_05"),
+    ("2026-12-04", "21:00", "spd12h_07.mp4", "spd12h_07"),
+    ("2026-12-06", "21:00", "spd12h_09.mp4", "spd12h_09"),
+    ("2026-12-08", "21:00", "spd12h_11.mp4", "spd12h_11"),
+]
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ, *PX, *GTA6H, *SPD6H)
+    for d, t, f, c in (*HIGHLIGHT, *FOMO, *SEGA, *COD, *WZ, *PX, *GTA6H, *SPD6H, *SPD12H)
 ]
 
 CAPTIONS = json.load(open("captions_highlight.json", encoding="utf-8"))
+
+# Written by tools/ig_hook_manifest.py in the parent pipeline. A reel listed here
+# as SHORT/LONG/NO_TEASER provably opens without its cold-open teaser, so it never
+# ships; unjudged reels (no matching source clip) air with a warning.
+HOOK_GATE = (json.load(open("hook_gate.json", encoding="utf-8"))
+             if os.path.exists("hook_gate.json") else {})
 
 
 def cover_payload(repo: str, file_name: str) -> dict:
@@ -356,6 +375,16 @@ def publish_entry(entry: dict, state: dict, repo: str, now: datetime,
     caption = CAPTIONS[day]
     publish_at = slot_time(entry)
     state_key = f"{entry['date']}|{day}"
+
+    # Before the timing gates, so the log names a held reel on every run and a
+    # held reel never counts as a missed publish window.
+    gate = (HOOK_GATE.get("reels") or {}).get(file_name)
+    if gate:
+        if gate.get("status") in (HOOK_GATE.get("blocking") or []):
+            print(f"{day}: HELD by hook gate ({gate['status']}: {gate.get('note', '')}).")
+            return "held"
+        if gate.get("status") != "PASS":
+            print(f"{day}: no cold-open proof ({gate['status']}); airing anyway.")
 
     if not force:
         if state_key in state.get("published", []):

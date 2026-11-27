@@ -237,9 +237,23 @@ SPD6 = [
 ]
 
 
+# iShowSpeed GTA 6 12-clip batch (VODs 91c96JtcIFg + OIeLbmyraRQ), cut 2026-11-26
+# with a 4.2 s punch cold open. This page takes the EVEN clips; the odd ones go to
+# @scrollsociety.mp4, so no clip runs on both Instagram accounts. 21:00 UTC is the
+# only hour where US East, US West, the UK and Australia are all awake at once.
+SPD12 = [
+    ("2026-11-29", "21:00", "spd12_02.mp4", "spd12_02"),
+    ("2026-12-01", "21:00", "spd12_04.mp4", "spd12_04"),
+    ("2026-12-03", "21:00", "spd12_06.mp4", "spd12_06"),
+    ("2026-12-05", "21:00", "spd12_08.mp4", "spd12_08"),
+    ("2026-12-07", "21:00", "spd12_10.mp4", "spd12_10"),
+    ("2026-12-09", "21:00", "spd12_12.mp4", "spd12_12"),
+]
+
+
 SCHEDULE = [
     {"date": d, "time": t, "file": f, "caption": c}
-    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV + FM27ES + GTA6 + SPD6
+    for d, t, f, c in BLOCK + SPEED + MC + COPS + GOLD + SUPO + SKY + ESC + BLD + ONEK + LEBRON + PRISON + EXPLOSION + GTA + SV + FM27ES + GTA6 + SPD6 + SPD12
 ]
 
 CAPTIONS = json.load(open("captions.json", encoding="utf-8"))
